@@ -51,4 +51,4 @@ if __name__ == '__main__':
 
 
 # Proba gita i gihuba
-# Jos jedna proba, pull radi, a sada push
+# Jos jedna proba, promena u new_branch
