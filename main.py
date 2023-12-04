@@ -51,4 +51,4 @@ if __name__ == '__main__':
 
 
 # Proba gita i gihuba
-# Jos jedna proba, sada pulla
+# Jos jedna proba, pull radi, a sada push
