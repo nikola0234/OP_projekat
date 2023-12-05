@@ -11,7 +11,8 @@ def main():
         print("2. Register")
         print('3. List of avaliable movies')
         print('4. Search for movie')
-        print("5. Quit the app")
+        print('5. Search for movie projection')
+        print("6. Quit the app")
         choice = input('Enter your choice: ')
 
         if choice == '1':
@@ -38,6 +39,9 @@ def main():
             movie_functions.search_movie()
         elif choice == '5':
             user_func.clear_screen()
+            movie_functions.search_projection()
+        elif choice == '6':
+            user_func.clear_screen()
             break
         else:
             user_func.clear_screen()
@@ -47,8 +51,9 @@ def main():
 if __name__ == '__main__':
     user_func.read_user_data()
     movie_functions.read_movies()
+    movie_functions.read_appointment()
+    movie_functions.read_projections()
     main()
 
 
-# Proba gita i gihuba
-# Jos jedna proba, promena u new_branch
+

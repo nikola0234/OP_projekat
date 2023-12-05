@@ -1,0 +1,2 @@
+1111|A1|19:30|21:00|monday, tuesday, wednesday|Fight Club|4.30
+1112|A1|18:00|21:00|monday, wednesday, friday|Inception|4.20

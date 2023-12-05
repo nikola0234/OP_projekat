@@ -20,3 +20,4 @@ maklja023|maklja023|aa|a|registered_user
 korisnik1|korisnik1|aa|aa|registered_user
 korsinik2|korisnik2|aaa|aaa|registered_user
 employee5|employee5|nikola|bjelica|employee
+nikola90|nikola90|aa|aa|registered_user
