@@ -46,7 +46,7 @@ def main():
         else:
             user_func.clear_screen()
             print("Not existing choice. Try again.")
-        
+
 
 if __name__ == '__main__':
     user_func.read_user_data()
