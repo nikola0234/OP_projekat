@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from tabulate import tabulate
 
+
 def clear_screen1():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -10,17 +11,6 @@ def clear_screen1():
 movies = []
 apointments = []
 projections = []
-
-
-def print_movies(number, movie):
-    print(f'{number}. Name: {movie["name"]}\n'
-          f'   Genre: {movie["genre"]}\n'
-          f'   Duration(min): {movie["duration"]}\n'
-          f'   Film director: {movie["film director"]}\n'
-          f'   Main roles: {movie["actors"]}\n'
-          f'   Country of production: {movie["country of production"]}\n'
-          f'   Year of creation: {movie["year of production"]}\n'
-          f'   Summary: {movie["summary"]}\n')
 
 
 def print_movies_table(movies):
@@ -43,6 +33,8 @@ def print_movies_table(movies):
 
     table = tabulate(table_data, headers=headers, tablefmt='grid')
     print(table)
+
+
 def read_movies():
     with open('movies.txt', 'r') as fin:
         for line in fin:
@@ -114,7 +106,6 @@ def search_by_duration(movies):
         return [movie for movie in movies if minimum <= eval(movie['duration']) <= maximum]
     else:
         print('Invalid choice. Returning back to original list.')
-
 
 
 def filter_film_director(user_input, movie_film_director):
@@ -200,31 +191,26 @@ def read_projections():
             })
 
 
-def print_projection(number, projection, appointment):
-    print(f'{number}. Movie name: {projection["movie name"]}\n'
-          f'Cinema hall: {projection["cinema hall"]}\n'
-          f'Date: {appointment["date"]}\n'
-          f'Starting time: {projection["starting time"]}\n'
-          f'Ending time: {projection["ending time"]}')
-
-
 def print_table_projection(projection, appointment):
     headers = ["#", "Movie name", "Cinema hall", "Date of this projection", "Starting time", "Ending time"]
     table_data = []
     number = 1
-    for proj, appoint in zip(projection, appointment):
-        table_row = [
-            number,
-            proj["movie name"],
-            proj["cinema hall"],
-            appoint["date"],
-            proj["starting time"],
-            proj["ending time"]
-        ]
-        table_data.append(table_row)
-        number += 1
-    table = tabulate(table_data, headers= headers, tablefmt="grid")
+    for appoint in appointment:
+        for proj in projection:
+            if proj['code'] in appoint['code']:
+                table_row = [
+                    number,
+                    proj["movie name"],
+                    proj["cinema hall"],
+                    appoint["date"],
+                    proj["starting time"],
+                    proj["ending time"]
+                ]
+                table_data.append(table_row)
+                number += 1
+    table = tabulate(table_data, headers=headers, tablefmt="grid")
     print(table)
+
 
 def filter_projection(choice):
     matching_projection = projections.copy()
@@ -245,6 +231,7 @@ def filter_projection(choice):
             for apointment in apointments:
                 if projection['code'] in apointment['code']:
                     matching_appointment.append(apointment)
+
         print(matching_projection)
         print(matching_appointment)
         print_table_projection(matching_projection, matching_appointment)
@@ -333,4 +320,3 @@ def search_projection():
         else:
             clear_screen1()
             print('Not existing choice. Try again.')
-
