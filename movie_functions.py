@@ -1,7 +1,7 @@
 # U ovom fajlu se nalaze funcije koje omogucavaju korisnicima pretrage filmova.
 import os
 from datetime import datetime
-
+from tabulate import tabulate
 
 def clear_screen1():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -23,6 +23,26 @@ def print_movies(number, movie):
           f'   Summary: {movie["summary"]}\n')
 
 
+def print_movies_table(movies):
+    headers = ["#", "Name", "Genre", "Duration(min)", "Film director", "Main roles", "Country of production", "Year of creation", "Summary"]
+    table_data = []
+
+    for number, movie in enumerate(movies, start=1):
+        table_row = [
+            number,
+            movie['name'],
+            movie['genre'],
+            movie['duration'],
+            movie['film director'],
+            movie['actors'],
+            movie['country of production'],
+            movie['year of production'],
+            movie['summary']
+        ]
+        table_data.append(table_row)
+
+    table = tabulate(table_data, headers=headers, tablefmt='grid')
+    print(table)
 def read_movies():
     with open('movies.txt', 'r') as fin:
         for line in fin:
@@ -42,10 +62,7 @@ def read_movies():
 def avaliable_movies():
     clear_screen1()
     print('\n The movies we are currently showing: \n')
-    num = 1
-    for movie in movies:
-        print_movies(num, movie)
-        num += 1
+    print_movies_table(movies)
     input('Enter to go back...')
     clear_screen1()
 
@@ -64,8 +81,7 @@ def search_by_categories(categories):
 
     if matching_movies:
         print('Movies that fit your willing: \n')
-        for number, movie in enumerate(matching_movies, start=1):
-            print_movies(number, movie)
+        print_movies_table(matching_movies)
         input('Enter to go back...')
     else:
         input(f'\nNo movie fits your current willing, enter back and find the right one for you!')
@@ -98,7 +114,7 @@ def search_by_duration(movies):
         return [movie for movie in movies if minimum <= eval(movie['duration']) <= maximum]
     else:
         print('Invalid choice. Returning back to original list.')
-        return movies
+
 
 
 def filter_film_director(user_input, movie_film_director):
@@ -192,25 +208,46 @@ def print_projection(number, projection, appointment):
           f'Ending time: {projection["ending time"]}')
 
 
+def print_table_projection(projection, appointment):
+    headers = ["#", "Movie name", "Cinema hall", "Date of this projection", "Starting time", "Ending time"]
+    table_data = []
+    number = 1
+    for proj, appoint in zip(projection, appointment):
+        table_row = [
+            number,
+            proj["movie name"],
+            proj["cinema hall"],
+            appoint["date"],
+            proj["starting time"],
+            proj["ending time"]
+        ]
+        table_data.append(table_row)
+        number += 1
+    table = tabulate(table_data, headers= headers, tablefmt="grid")
+    print(table)
+
 def filter_projection(choice):
     matching_projection = projections.copy()
-    matching_appointment = apointments.copy()
+    matching_appointment = []
 
     if choice == '3':
         clear_screen1()
         date_input = input(f'Write the date you are interested in: ')
         check_date_apointment(date_input)
+        return
     elif choice in '12456':
         value = choice_keys[choice]
         user_input = input(f'Write the {value} you are interested in: ')
         matching_projection = [projection for projection in projections if projection_filter_functions[value](user_input, projection[value])]
     if matching_projection:
         print('Movie projections that fit your willing: \n')
-        for number, projection in enumerate(matching_projection, start=1):
+        for projection in matching_projection:
             for apointment in apointments:
                 if projection['code'] in apointment['code']:
-                    print_projection(number, projection, apointment)
-                    print('\n')
+                    matching_appointment.append(apointment)
+        print(matching_projection)
+        print(matching_appointment)
+        print_table_projection(matching_projection, matching_appointment)
         input('Enter to continue...')
     else:
         clear_screen1()
@@ -219,17 +256,19 @@ def filter_projection(choice):
 
 
 def check_date_apointment(user_input):
+    apointment_list = []
+    projection_list = []
     for apointment in apointments:
-        number = 1
-        if user_input == apointment['date']:
+        if user_input == apointment["date"].strip():
             for projection in projections:
                 if projection['code'] in apointment['code']:
-                    print_projection(number, projection, apointment)
-                    number += 1
+                    apointment_list.append(apointment)
+                    projection_list.append(projection)
+            print_table_projection(projection_list, apointment_list)
             input('Enter to continue...')
-        else:
-            print('Unfortunaly there is no movie projection for that date.')
             return
+    print('Unfortunaly there is no movie projection for that date.')
+    return
 
 
 def filter_movie_name(user_input, movie_name):
