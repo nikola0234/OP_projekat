@@ -58,6 +58,66 @@ def avaliable_movies():
     input('Enter to go back...')
     clear_screen1()
 
+
+def add_new_movie():
+    clear_screen1()
+    while True:
+        print("Enter the data for movie you are adding: \n")
+        name = input('Enter the name of movie: ')
+        genre = input('Enter the genre of movie: ')
+        duration = input('Enter the duration of movie(in minutes): ')
+        director = input('Enter the film director: ')
+        main_roles = input('Enter the main actors: ')
+        country = input('Enter the country of production: ')
+        year = input('Enter the year of creation: ')
+        summary = input('Enter the short summary of movie: ')
+
+        if not all([name, genre, duration, director, main_roles, country, year, summary]):
+            print("Please fill in all the data. None of the data can be empty. Try again.\n")
+            continue
+        with open('movies.txt', 'a') as fin:
+            fin.write(name + '|' + genre + '|' + duration + '|' + director + '|' + main_roles + '|' + country + '|'
+                      + year + '|' + summary + '\n')
+        print('\nNew movie successfully added!')
+        input('Enter to continue...')
+        break
+
+
+def add_new_projection():
+    print('Currently available movies are: \n')
+    print_movies_table(movies)
+    while True:
+        movie_name = input('Enter the name of one of available movies to add the projection: ')
+
+        all_names = []
+        for movie in movies:
+            all_names.append(movie['name'].lower())
+
+        if movie_name not in all_names:
+            print('Your input does not match any movie, please try again.')
+            continue
+
+        code = input('Enter the 4-digit projection code: ')
+        hall = input('Enter the cinema hall: ')
+        starting_time = input('Enter the starting time: ')
+        ending_time = input('Enter the ending time: ')
+        days = input('Enter the days of projection: ')
+        movie_name = input('Enter the movie name: ')
+        price = input('Enter the starting price: ')
+
+        days_list = days.split(',')
+
+        if not all([code, hall, starting_time, ending_time, days, movie_name, price]):
+            print("Please fill in all the data. None of the data can be empty. Try again.\n")
+            continue
+
+        with open('projections.txt', 'a') as fin:
+            fin.write(code + '|' + hall + '|' + starting_time + '|' + ending_time + '|' + days + '|' +
+                      movie_name + '|' + price + '\n')
+        print('\nNew projection successfully added!')
+        input('Enter to continue...')
+        break
+
 # U narednom delu se nalaze funcije vezane za pretragu filmova.
 
 
@@ -231,9 +291,6 @@ def filter_projection(choice):
             for apointment in apointments:
                 if projection['code'] in apointment['code']:
                     matching_appointment.append(apointment)
-
-        print(matching_projection)
-        print(matching_appointment)
         print_table_projection(matching_projection, matching_appointment)
         input('Enter to continue...')
     else:

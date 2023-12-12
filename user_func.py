@@ -169,7 +169,9 @@ def manager_menu(logged_in):
         print('4. Add new manager')
         print('5. List of avaliable movies')
         print('6. Search for movies')
-        print('7. Quit the app')
+        print('7. Add new movie')
+        print('8. Add new movie projection')
+        print('9. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -189,6 +191,12 @@ def manager_menu(logged_in):
             clear_screen()
             movie_functions.search_movie()
         elif choice == '7':
+            clear_screen()
+            movie_functions.add_new_movie()
+        elif choice == '8':
+            clear_screen()
+            movie_functions.add_new_projection()
+        elif choice == '9':
             clear_screen()
             logged_in = False
             break
