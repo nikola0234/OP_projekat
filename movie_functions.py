@@ -39,21 +39,43 @@ def read_movies():
     with open('movies.txt', 'r') as fin:
         for line in fin:
             movie = line.split('|')
-            movies.append({
-                'name': movie[0],
-                'genre': movie[1],
-                'duration': movie[2],
-                'film director': movie[3],
-                'actors': movie[4],
-                'country of production': movie[5],
-                'year of production': movie[6],
-                'summary': movie[7]
-            })
+            if movie[8] == 'active\n':
+                movies.append({
+                    'name': movie[0],
+                    'genre': movie[1],
+                    'duration': movie[2],
+                    'film director': movie[3],
+                    'actors': movie[4],
+                    'country of production': movie[5],
+                    'year of production': movie[6],
+                    'summary': movie[7],
+                    'status': movie[8]
+                })
+
+
+def write_movies():
+    with open('movies.txt', 'w') as fin:
+        for movie in movies:
+            fin.write(movie['name'] + '|' +
+                      movie['genre'] + '|' +
+                      movie['duration'] + '|' +
+                      movie['film director'] + '|' +
+                      movie['actors'] + '|' +
+                      movie['country of production'] + '|' +
+                      movie['year of production'] + '|' +
+                      movie['summary'] + '|' +
+                      movie['status'])
+
+
+def update_movie_list():
+    movies.clear()
+    read_movies()
 
 
 def avaliable_movies():
     clear_screen1()
     print('\n The movies we are currently showing: \n')
+    print(movies)
     print_movies_table(movies)
     input('Enter to go back...')
     clear_screen1()
@@ -63,7 +85,9 @@ def add_new_movie():
     clear_screen1()
     while True:
         print("Enter the data for movie you are adding: \n")
-        name = input('Enter the name of movie: ')
+        name = input('Enter the name of movie(x to go back): ')
+        if name == 'x':
+            break
         genre = input('Enter the genre of movie: ')
         duration = input('Enter the duration of movie(in minutes): ')
         director = input('Enter the film director: ')
@@ -77,18 +101,95 @@ def add_new_movie():
             continue
         with open('movies.txt', 'a') as fin:
             fin.write(name + '|' + genre + '|' + duration + '|' + director + '|' + main_roles + '|' + country + '|'
-                      + year + '|' + summary + '\n')
+                      + year + '|' + summary + '|' + 'active\n')
+        movies.clear()
+        read_movies()
         print('\nNew movie successfully added!')
         input('Enter to continue...')
         break
+
+
+def delete_movie():
+    clear_screen1()
+    while True:
+        print('Currently avaliable movies: \n')
+        print_movies_table(movies)
+        name = input('Enter the name of movie you want to delete(x to go back): ')
+        if name.lower() == 'x':
+            movies.clear()
+            read_movies()
+            break
+        for movie in movies:
+            if movie['name'].lower() == name.lower():
+                movie['status'] = 'deleted\n'
+                write_movies()
+                input('Movie succesefully deleted, this action will be loaded after you go back to your menu! Enter to go back...')
+                break
+        else:
+            input('The input is inapropriate, click enter and try again!')
+            continue
+
+
+def change_movie_data():
+    clear_screen1()
+    while True:
+        print('Currently avaliable movies: \n')
+        print_movies_table(movies)
+        name = input('For which movie you want to change the data(x to go back): ')
+        if name.lower() == 'x':
+            break
+        for movie in movies:
+            if movie['name'].lower() == name.lower():
+                categorie = input(
+                    'What do you want to change about this movie(name, genre, director, actors, country,'
+                    'year or summary)(enter one categorie): ')
+                if categorie == 'name':
+                    new_name = input('Enter the changed name of this movie: ')
+                    movie['name'] = new_name
+                    write_movies()
+                    break
+                elif categorie == 'genre':
+                    new_genre = input('Enter the changed gender(s) of this movie: ')
+                    movie['genre'] = new_genre
+                    write_movies()
+                    break
+                elif categorie == 'director':
+                    new_director = input('Enter the changed film director of this movie: ')
+                    movie['director'] = new_director
+                    write_movies()
+                    break
+                elif categorie == 'actors':
+                    new_actor = input('Enter the changed actor(s) that played in this movie: ')
+                    movie['actors'] = new_actor
+                    write_movies()
+                    break
+                elif categorie == 'country':
+                    new_country = input('Enter the changed country of production of this movie: ')
+                    movie['country of production'] = new_country
+                    write_movies()
+                    break
+                elif categorie == 'year':
+                    new_year = input('Enter the changed year of production of this movie: ')
+                    movie['year of production'] = new_year
+                    write_movies()
+                    break
+                elif categorie == 'summary':
+                    new_summary = input('Enter the changed summary of this movie: ')
+                    movie['summary'] = new_summary
+                    write_movies()
+                    break
+        else:
+            input('The input is inapropriate, click enter and try again!')
+            continue
 
 
 def add_new_projection():
     print('Currently available movies are: \n')
     print_movies_table(movies)
     while True:
-        movie_name = input('Enter the name of one of available movies to add the projection: ')
-
+        movie_name = input('Enter the name of one of available movies to add the projection(x to go back): ')
+        if movie_name.lower() == 'x':
+            break
         all_names = []
         for movie in movies:
             all_names.append(movie['name'].lower())
@@ -209,7 +310,7 @@ def search_movie():
         print('7. Year of production')
         print('8. Back to main manu')
 
-        categories_input = input('Enter the categories you want to search movies for (comma-separated): ')
+        categories_input = input('Enter the categories you want to search movies for (comma-separated and use words): ')
         if '8' == categories_input:
             clear_screen1()
             break

@@ -1,6 +1,4 @@
-Fight Club|Drama|139|David Fincher|Brad Pitt, Edward norton|USA|1999|Insomniac starts underground fight club, sparking chaos, identity crisis.
-The Shawshank Redemption|Drama|142|Frank Darabont|Tim Robbins, Morgan Freeman|USA|1994|Banker adapts to prison life, befriends inmates, seeks redemption for a crime he didn't commit.
-Inception|Sci-Fi|148|Christopher Nolan|Leonardo DiCaprio, Joseph Gordon-Levitt|USA|2010|Thief enters dreams to steal secrets, faces challenges in a world where reality is subjective.
-The Dark Knight|Drama, Action, Crime |152|Christopher Nolan|Christian Bale, Heath Ledger|USA|2008|Batman faces the Joker, a criminal mastermind, testing the hero's moral limits.
-The Matrix|Action, Sci-Fi|136|Lana Wachowski, Lilly Wachowski|Keanu Reeves, Laurence Fishburne|USA|1999|Computer programmer discovers the truth about reality and joins rebels against intelligent machines.
-a|a|a|a|a, a, a|a|a|a
+Fight Club|Drama|139|David Fincher|Brad Pitt, Edward norton|USA|1999|Insomniac starts underground fight club, sparking chaos, identity crisis.|active
+The Shawshank Redemption|Drama|142|Frank Darabont|Tim Robbins, Morgan Freeman|USA|1994|Banker adapts to prison life, befriends inmates, seeks redemption for a crime he didn't commit.|active
+The Dark Knight|Drama, Action, Crime |152|Christopher Nolan|Christian Bale, Heath Ledger|USA|2008|Batman faces the Joker, a criminal mastermind, testing the hero's moral limits.|active
+matrix|action, sci-fi|136|Lana Wachowski, Lilly Wachowski|Keanu Reeves, Laurence Fishburne|SAD|1999|Computer programmer discovers the truth about reality and joins rebels against intelligent machines.|active
