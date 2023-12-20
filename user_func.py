@@ -173,7 +173,8 @@ def manager_menu(logged_in):
         print('8. Delete movie')
         print('9. Change the movie data')
         print('10. Add new movie projection')
-        print('11. Quit the app')
+        print('11. Delete movie projection')
+        print('12. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -205,6 +206,9 @@ def manager_menu(logged_in):
             clear_screen()
             movie_functions.add_new_projection()
         elif choice == '11':
+            clear_screen()
+            movie_functions.delete_movie_projection()
+        elif choice == '12':
             clear_screen()
             logged_in = False
             break

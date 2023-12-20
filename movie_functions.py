@@ -2,6 +2,7 @@
 import os
 from datetime import datetime
 from tabulate import tabulate
+import re
 
 
 def clear_screen1():
@@ -11,6 +12,12 @@ def clear_screen1():
 movies = []
 apointments = []
 projections = []
+
+
+def is_valid_time_format(input_str):
+    time_pattern = re.compile(r'^[0-2][0-9]:[0-5][0-9]$')
+
+    return bool(re.match(time_pattern, input_str))
 
 
 def print_movies_table(movies):
@@ -123,6 +130,7 @@ def delete_movie():
             if movie['name'].lower() == name.lower():
                 movie['status'] = 'deleted\n'
                 write_movies()
+                delete_projection_after_movie(name)
                 input('Movie succesefully deleted, this action will be loaded after you go back to your menu! Enter to go back...')
                 break
         else:
@@ -198,10 +206,27 @@ def add_new_projection():
             print('Your input does not match any movie, please try again.')
             continue
 
-        code = input('Enter the 4-digit projection code: ')
+        while True:
+            code = input('Enter the 4-digit projection code: ')
+            if len(code) == 4:
+                break
+            else:
+                 print('Code must include 4 digits!')
         hall = input('Enter the cinema hall: ')
-        starting_time = input('Enter the starting time: ')
-        ending_time = input('Enter the ending time: ')
+        while True:
+            starting_time = input('Enter the starting time (format HH:MM): ')
+            if is_valid_time_format(starting_time):
+                break
+            else:
+                print('Not a valid time format. Correct example: 20:00')
+
+            # Loop for ending time input with validation
+        while True:
+            ending_time = input('Enter the ending time (format HH:MM): ')
+            if is_valid_time_format(ending_time):
+                break
+            else:
+                print('Not a valid time format. Correct example: 20:00')
         days = input('Enter the days of projection: ')
         movie_name = input('Enter the movie name: ')
         price = input('Enter the starting price: ')
@@ -214,11 +239,39 @@ def add_new_projection():
 
         with open('projections.txt', 'a') as fin:
             fin.write(code + '|' + hall + '|' + starting_time + '|' + ending_time + '|' + days + '|' +
-                      movie_name + '|' + price + '\n')
+                      movie_name + '|' + price + '|' + 'active' +'\n')
         print('\nNew projection successfully added!')
         input('Enter to continue...')
         break
 
+
+def delete_movie_projection():
+    clear_screen1()
+    while True:
+        print('Currently active movie projections: \n')
+        print_table_projection(projections, apointments)
+        projection = input('Enter the code of projection you want to delete(x to go back): ')
+
+        if projection.lower() == 'x':
+            projections.clear()
+            read_projections()
+            break
+        for proj in projections:
+            if projection == proj['code']:
+                proj['status'] = 'deleted\n'
+                write_projections()
+                input('Projection succesefully deleted, action will be loaded after you go back to your menu!Enter to go back...')
+                break
+        else:
+                input('The input is inapropriate, click enter and try again!')
+                continue
+
+
+def delete_projection_after_movie(movie_name):
+    for proj in projections:
+        if proj['movie name'].lower() == movie_name.lower():
+            proj['status'] = 'deleted\n'
+            write_projections()
 # U narednom delu se nalaze funcije vezane za pretragu filmova.
 
 
@@ -341,19 +394,36 @@ def read_projections():
     with open('projections.txt', 'r') as fin:
         for projection in fin:
             proj = projection.split('|')
-            projections.append({
-                'code': proj[0],
-                'cinema hall': proj[1],
-                'starting time': proj[2],
-                'ending time': proj[3],
-                'days': proj[4],
-                'movie name': proj[5],
-                'price': proj[6]
-            })
+            if proj[7] == 'active\n':
+                projections.append({
+                    'code': proj[0],
+                    'cinema hall': proj[1],
+                    'starting time': proj[2],
+                    'ending time': proj[3],
+                    'days': proj[4],
+                    'movie name': proj[5],
+                    'price': proj[6],
+                    'status': proj[7]
+                })
+
+
+def write_projections():
+    with open('projections.txt', 'w') as fin:
+        for proj in projections:
+            fin.write(
+                proj['code'] + '|' +
+                proj['cinema hall'] + '|' +
+                proj['starting time'] + '|' +
+                proj['ending time'] + '|' +
+                proj['days'] + '|' +
+                proj['movie name'] + '|' +
+                proj['price'] + '|' +
+                proj['status']
+            )
 
 
 def print_table_projection(projection, appointment):
-    headers = ["#", "Movie name", "Cinema hall", "Date of this projection", "Starting time", "Ending time"]
+    headers = ["#", "Projection code", "Movie name", "Cinema hall", "Date of this projection", "Starting time", "Ending time"]
     table_data = []
     number = 1
     for appoint in appointment:
@@ -361,6 +431,7 @@ def print_table_projection(projection, appointment):
             if proj['code'] in appoint['code']:
                 table_row = [
                     number,
+                    proj["code"],
                     proj["movie name"],
                     proj["cinema hall"],
                     appoint["date"],
