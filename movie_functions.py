@@ -17,8 +17,15 @@ cinema_halls = []
 
 def is_valid_time_format(input_str):
     time_pattern = re.compile(r'^[0-2][0-9]:[0-5][0-9]$')
-
     return bool(re.match(time_pattern, input_str))
+
+
+def is_valid_date_format(input_str):
+        try:
+            datetime_object = datetime.strptime(input_str, '%d.%m.%Y')
+            return True
+        except ValueError:
+            return False
 
 
 def generate_appointments_from_projections(input_file, output_file):
@@ -563,12 +570,41 @@ def filter_projection(choice):
 
     if choice == '3':
         clear_screen1()
-        date_input = input(f'Write the date you are interested in: ')
-        check_date_apointment(date_input)
+        while True:
+            date_input = input(f'Write the date you are interested in: ')
+            if is_valid_date_format(date_input):
+                check_date_apointment(date_input)
+                break
+            else:
+                print('Not a valid date format. Correct example: 12.12.2024')
         return
     elif choice in '12456':
         value = choice_keys[choice]
-        user_input = input(f'Write the {value} you are interested in: ')
+        if choice == '4':
+            while True:
+                user_input = input(f'Write the {value} you are interested in: ')
+                if is_valid_time_format(user_input):
+                    break
+                else:
+                    print('Not a valid time format. Correct example: 20:00')
+
+        if choice == '5':
+            while True:
+                user_input = input(f'Write the {value} you are interested in: ')
+                if is_valid_time_format(user_input):
+                    break
+                else:
+                    print('Not a valid time format. Correct example: 20:00')
+        elif choice == '2':
+            while True:
+                user_input = input(f'Write the {value} you are interested in: ')
+                if user_input in cinema_halls:
+                    break
+                else:
+                    print('The entered hall is not available! The available ones are:')
+                    print(cinema_halls)
+        elif choice in '16':
+            user_input = input(f'Write the {value} you are interested in: ')
         matching_projection = [projection for projection in projections if projection_filter_functions[value](user_input, projection[value])]
     if matching_projection:
         print('Movie projections that fit your willing: \n')

@@ -19,7 +19,7 @@ def is_valid_password(password):
 
 
 def is_username_taken(username, user_list):
-    return any(u['username'] == username for u in user_list)
+    return username in user_list
 
 
 def clear_screen():
@@ -54,26 +54,27 @@ def login(username, password):
 
 
 def register():
+    username_list = [u['username'] for u in users]
     while True:
         clear_screen()
         print('Welcome to registration, please enter the following: \n')
-        username = input("Enter username: ")
-        password = input("Enter password(min. 6 characters and 1 number): ")
+        while True:
+            username = input("Enter username: ")
+            if is_username_taken(username, username_list):
+                print("Already taken username,try another one.")
+            else:
+                break
+
+        while True:
+            password = input("Enter password(min. 6 characters and 1 number): ")
+            if is_valid_password(password):
+                break
+            else:
+                print("Password need to have at least 6 characters and one number. Try again: ")
+
         name = input("Enter your name: ")
         surname = input("Enter your surname: ")
         role = 'registered_user'
-
-        if len(password) < 6 or not re.search(r'\d', password):
-            clear_screen()
-            print("Password need to have at least 6 characters and one number. Try again: \n")
-            input("Press enter to continue...")
-            continue
-
-        if any(username == user['username'] for user in users):
-            clear_screen()
-            print("Already taken username,try another one.\n")
-            input("Press enter to continue...")
-            continue
 
         user_data = {
             'username': username,
@@ -97,69 +98,80 @@ def manager_menu(logged_in):
     clear_screen()
 
     def new_employee():
-        print('Enter the data for new employee... \n ')
-        username = input('Enter the username: ')
-        name = input('Enter the name: ')
-        surname = input('Enter the surname: ')
-        password = input('Enter the password: ')
-        role = 'employee'
+        print('Enter the data for new employee(x to go back) \n ')
 
-        if is_valid_password(password) and not is_username_taken(username, users):
-            user_data = {
-                'username': username,
-                'password': password,
-                'name': name,
-                'surname': surname,
-                'role': role+'\n'
-            }
-            users.append(user_data)
-            with open('users1.txt', "+a") as fin:
-                fin.write(
-                    user_data['username'] + '|' + user_data['password'] + '|' + user_data['name'] + '|' + user_data[
-                        'surname'] + '|' + user_data['role'])
-            print('\nNew employee successfully added!')
-            input('Enter to continue...')
-            clear_screen()
-            return
-        elif is_username_taken(username, users):
-            clear_screen()
-            print('Already taken username,try another one.\n')
-            new_employee()
-
-        else:
-            clear_screen()
-            print('Password need to have at least 6 characters and one number. Try again: \n')
-            new_employee()
+        while True:
+            username = input('Enter the username: ')
+            if username.lower() == 'x':
+                return
+            name = input('Enter the name: ')
+            if name.lower() == 'x':
+                return
+            surname = input('Enter the surname: ')
+            if surname.lower() == 'x':
+                return
+            password = input('Enter the password: ')
+            if password.lower() == 'x':
+                return
+            role = 'employee'
+            if is_valid_password(password) and not is_username_taken(username, users):
+                user_data = {
+                    'username': username,
+                    'password': password,
+                    'name': name,
+                    'surname': surname,
+                    'role': role+'\n'
+                }
+                users.append(user_data)
+                with open('users1.txt', "+a") as fin:
+                    fin.write(
+                        user_data['username'] + '|' + user_data['password'] + '|' + user_data['name'] + '|' + user_data[
+                            'surname'] + '|' + user_data['role'])
+                print('\nNew employee successfully added!')
+                input('Enter to continue...')
+                break
+            elif is_username_taken(username, users):
+                clear_screen()
+                print('Already taken username,try another one.\n')
+            else:
+                clear_screen()
+                print('Password need to have at least 6 characters and one number. Try again: \n')
 
     def new_manager():
         print('Enter the data for new manager... \n ')
         username = input('Enter the username: ')
-        name = input('Enter the name: ')
-        surname = input('Enter the surname: ')
-        password = input('Enter the password: ')
-        role = 'manager'
-
-        if is_valid_password(password):
-            user_data = {
-                'username': username,
-                'password': password,
-                'name': name,
-                'surname': surname,
-                'role': role+'\n'
-            }
-            users.append(user_data)
-            with open('users1.txt', "+a") as fin:
-                fin.write(
-                    user_data['username'] + '|' + user_data['password'] + '|' + user_data['name'] + '|' + user_data[
-                        'surname'] + '|' + user_data['role'])
-            print('\nNew manager successfully added!')
-            input('Enter to continue...')
-            clear_screen()
+        if username.lower() == 'x':
             return
-        else:
-            clear_screen()
-            print('Password need to have at least 6 characters and one number. Try again: \n')
-            new_manager()
+        name = input('Enter the name: ')
+        if name.lower() == 'x':
+            return
+        surname = input('Enter the surname: ')
+        if surname.lower() == 'x':
+            return
+
+        role = 'manager'
+        while True:
+            password = input('Enter the password: ')
+            if is_valid_password(password):
+                user_data = {
+                    'username': username,
+                    'password': password,
+                    'name': name,
+                    'surname': surname,
+                    'role': role+'\n'
+                }
+                users.append(user_data)
+                with open('users1.txt', "+a") as fin:
+                    fin.write(
+                        user_data['username'] + '|' + user_data['password'] + '|' + user_data['name'] + '|' + user_data[
+                            'surname'] + '|' + user_data['role'])
+                print('\nNew manager successfully added!')
+                input('Enter to continue...')
+                clear_screen()
+                return
+            else:
+                clear_screen()
+                print('Password need to have at least 6 characters and one number. Try again: \n')
 
     while logged_in:
         print('Welcome to manager menu.\n')
@@ -229,7 +241,8 @@ def employee_menu(logged_in):
         print('2. Change your personal data')
         print('3. List of avaliable movies')
         print('4. Search for movies')
-        print('5. Quit the app')
+        print('5. Search for movie projection')
+        print('6. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -243,6 +256,9 @@ def employee_menu(logged_in):
             clear_screen()
             movie_functions.search_movie()
         elif choice == '5':
+            clear_screen()
+            movie_functions.search_projection()
+        elif choice == '6':
             clear_screen()
             return
         else:
@@ -258,7 +274,8 @@ def user_menu(logged_in):
         print('2. Change your personal data')
         print('3. List of avaliable movies')
         print('4. Search for movies')
-        print('5. Quit the app')
+        print('5. Search for movie projection')
+        print('6. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -273,6 +290,9 @@ def user_menu(logged_in):
             movie_functions.search_movie()
         elif choice == '5':
             clear_screen()
+            movie_functions.search_projection()
+        elif choice == '6':
+            clear_screen()
             break
         else:
             clear_screen()
@@ -286,7 +306,7 @@ def change_data(user1):
       f"\tsurname: {user1['surname']}\n"
       f"\tpassword: {user1['password']}\n")
 
-    print('What do you want to change(name,surname,password or back)? ')
+    print('What do you want to change(name,surname,password or x to go back)? ')
     choice = input('Enter your choice here: ')
     if choice == 'name':
         new_name = input('Enter the new name: ')
@@ -299,17 +319,18 @@ def change_data(user1):
         clear_screen()
         print('Data successfully changed.')
     elif choice == 'password':
-        new_password = input('Enter the new password: ')
-        if len(new_password)<6 or not re.search(r'\d', new_password):
-            clear_screen()
-            print("Password need to have at least 6 characters and one number. Try again: \n")
-            input("Press enter to continue... ")
-            change_data(user1)
-        else:
-            user1['password'] = new_password
-        clear_screen()
+        while True:
+            new_password = input('Enter the new password(x to go back): ')
+            if new_password == 'x':
+                break
+            if is_valid_password(new_password):
+                user1['password'] = new_password
+                break
+            else:
+                clear_screen()
+                print("Password need to have at least 6 characters and one number. Try again: ")
         print('Data successfully changed. ')
-    elif choice == 'back':
+    elif choice == 'x':
         clear_screen()
         return
     else:
