@@ -16,7 +16,7 @@ cinema_halls = []
 
 
 def is_valid_time_format(input_str):
-    time_pattern = re.compile(r'^[0-2][0-9]:[0-5][0-9]$')
+    time_pattern = re.compile(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$')
     return bool(re.match(time_pattern, input_str))
 
 
@@ -28,7 +28,7 @@ def is_valid_date_format(input_str):
             return False
 
 
-def generate_appointments_from_projections(input_file, output_file):
+def generate_appointments_from_projections(input_file):
     with open(input_file, 'r') as fin:
         projections = fin.readlines()
 
@@ -56,7 +56,7 @@ def generate_appointments_from_projections(input_file, output_file):
                 appointments.append(appointment_format)
 
     # Save appointments to the output file
-    with open(output_file, 'w') as fin:
+    with open('projection_appointment.txt', 'w') as fin:
         for appointment in appointments:
             fin.write(appointment + '\n')
 
@@ -130,7 +130,6 @@ def read_cinema_hall():
 def avaliable_movies():
     clear_screen1()
     print('\n The movies we are currently showing: \n')
-    print(movies)
     print_movies_table(movies)
     input('Enter to go back...')
     clear_screen1()
@@ -144,7 +143,12 @@ def add_new_movie():
         if name == 'x':
             break
         genre = input('Enter the genre of movie: ')
-        duration = input('Enter the duration of movie(in minutes): ')
+        while True:
+            duration = input('Enter the duration of movie(in minutes): ')
+            if duration.isdigit():
+                break
+            else:
+                print('Duration needs to be in format: 120')
         director = input('Enter the film director: ')
         main_roles = input('Enter the main actors: ')
         country = input('Enter the country of production: ')
@@ -248,7 +252,7 @@ def add_new_projection():
             break
         all_names = []
         for movie in movies:
-            all_names.append(movie['name'].lower())
+            all_names.append(movie['name'])
 
         if movie_name not in all_names:
             print('Your input does not match any movie, please try again.')
@@ -299,9 +303,9 @@ def add_new_projection():
 
         with open('projections.txt', 'a') as fin:
             fin.write(code + '|' + hall + '|' + starting_time + '|' + ending_time + '|' + days + '|' +
-                      movie_name + '|' + price + '|' + 'active' +'\n')
+                      movie_name + '|' + price + '|' + 'active' + '\n')
         print('\nNew projection successfully added!')
-        generate_appointments_from_projections('projections.txt', 'projection_appointment.txt')
+        generate_appointments_from_projections('projections.txt')
         input('Enter to continue...')
         break
 
@@ -321,7 +325,6 @@ def delete_movie_projection():
         for proj in projections:
             if projection == proj['code']:
                 proj['status'] = 'deleted\n'
-                print(projections)
                 input('Projection succesefully deleted, action will be loaded after you go back to your menu!Enter to go back...')
                 break
         else:
@@ -677,6 +680,7 @@ projection_filter_functions = {
 def search_projection():
     while True:
         clear_screen1()
+        print_table_projection(projections, apointments)
         print('Find the right movie for you by choosing: \n')
         print('1. Movie name')
         print('2. Cinema hall')

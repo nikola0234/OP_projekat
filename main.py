@@ -53,9 +53,6 @@ if __name__ == '__main__':
     movie_functions.read_movies()
     movie_functions.read_projections()
     movie_functions.read_cinema_hall()
-    movie_functions.generate_appointments_from_projections('projections.txt', 'projection_appointment.txt')
+    movie_functions.generate_appointments_from_projections('projections.txt')
     movie_functions.read_appointment()
     main()
-    # PROBA
-
-
