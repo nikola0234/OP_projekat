@@ -28,21 +28,21 @@ def is_valid_date_format(input_str):
             return False
 
 
-def generate_appointments_from_projections(input_file):
-    with open(input_file, 'r') as fin:
+def generate_appointments_from_projections():
+    with open('projections.txt', 'r') as fin:
         projections = fin.readlines()
 
     current_date = datetime.now().date()
+
+    with open('projection_appointment.txt', 'r') as fin:
+        existing_appointments = set(line.strip() for line in fin)
 
     appointments = []
     for projection in projections:
         projection_data = projection.strip().split('|')
 
         code = projection_data[0]
-        starting_time = projection_data[2]
         days = projection_data[4].split(', ')
-
-        starting_hour, starting_minute = map(int, starting_time.split(':'))
 
         for i in range(14):
             appointment_date = current_date + timedelta(days=i)
@@ -51,11 +51,12 @@ def generate_appointments_from_projections(input_file):
                 letter1 = chr((i // 26) % 26 + ord('A'))
                 letter2 = chr((i % 26) + ord('A'))
                 appointment_code = f"{code}{letter1}{letter2}"
-                appointment_format = f"{appointment_code}|{appointment_date.strftime('%d.%m.%Y')}"
+                appointment_format = f"{appointment_code}|{appointment_date.strftime('%d.%m.%Y')}|{'active'}"
 
-                appointments.append(appointment_format)
+                if appointment_code not in existing_appointments:
+                    appointments.append(appointment_format)
+                    existing_appointments.add(appointment_code)
 
-    # Save appointments to the output file
     with open('projection_appointment.txt', 'w') as fin:
         for appointment in appointments:
             fin.write(appointment + '\n')
@@ -77,7 +78,8 @@ def print_movies_table(movies):
             movie['year of production'],
             movie['summary']
         ]
-        table_data.append(table_row)
+        if movie['status'] == 'active\n':
+            table_data.append(table_row)
 
     table = tabulate(table_data, headers=headers, tablefmt='grid')
     print(table)
@@ -87,18 +89,17 @@ def read_movies():
     with open('movies.txt', 'r') as fin:
         for line in fin:
             movie = line.split('|')
-            if movie[8] == 'active\n':
-                movies.append({
-                    'name': movie[0],
-                    'genre': movie[1],
-                    'duration': movie[2],
-                    'film director': movie[3],
-                    'actors': movie[4],
-                    'country of production': movie[5],
-                    'year of production': movie[6],
-                    'summary': movie[7],
-                    'status': movie[8]
-                })
+            movies.append({
+                'name': movie[0],
+                'genre': movie[1],
+                'duration': movie[2],
+                'film director': movie[3],
+                'actors': movie[4],
+                'country of production': movie[5],
+                'year of production': movie[6],
+                'summary': movie[7],
+                'status': movie[8]
+            })
 
 
 def write_movies():
@@ -183,6 +184,7 @@ def delete_movie():
                 movie['status'] = 'deleted\n'
                 write_movies()
                 delete_projection_after_movie(name)
+                delete_appointmets_after_projection(name)
                 input('Movie succesefully deleted, this action will be loaded after you go back to your menu! Enter to go back...')
                 break
         else:
@@ -305,7 +307,7 @@ def add_new_projection():
             fin.write(code + '|' + hall + '|' + starting_time + '|' + ending_time + '|' + days + '|' +
                       movie_name + '|' + price + '|' + 'active' + '\n')
         print('\nNew projection successfully added!')
-        generate_appointments_from_projections('projections.txt')
+        generate_appointments_from_projections()
         input('Enter to continue...')
         break
 
@@ -337,6 +339,17 @@ def delete_projection_after_movie(movie_name):
         if proj['movie name'].lower() == movie_name.lower():
             proj['status'] = 'deleted\n'
             write_projections()
+
+
+def delete_appointmets_after_projection(movie_name):
+    for proj in projections:
+        if proj['movie name'].lower() == movie_name.lower():
+            proj['status'] = 'deleted\n'
+            projection_code = proj['code']
+    for ap in apointments:
+        if projection_code in ap['code']:
+            ap['status'] = 'deleted\n'
+            write_appointments()
 
 
 def change_projection_data():
@@ -450,7 +463,7 @@ def filter_film_director(user_input, movie_film_director):
 
 def filter_actors(user_input, movie_actors):
     movie_actors = [actor.strip() for actor in movie_actors.lower().split(',')]
-    return user_input.lower() in movie_actors
+    return user_input in movie_actors
 
 
 def filter_country(user_input, movie_country):
@@ -475,6 +488,7 @@ category_filter_functions = {
 def search_movie():
     while True:
         clear_screen1()
+        print_movies_table(movies)
         print('Enter categorie for searching: \n')
         print('1. Name')
         print('2. Genre')
@@ -509,24 +523,33 @@ def read_appointment():
             apointments.append({
                 'code': ap[0],
                 'date': ap[1],
+                'status': ap[2]
             })
+
+def write_appointments():
+    with open('projection_appointment.txt', 'w') as fin:
+        for ap in apointments:
+            fin.write(
+                ap['code'] + '|' +
+                ap['date'] + '|' +
+                ap['status']
+            )
 
 
 def read_projections():
     with open('projections.txt', 'r') as fin:
         for projection in fin:
             proj = projection.split('|')
-            if proj[7] == 'active\n':
-                projections.append({
-                    'code': proj[0],
-                    'cinema hall': proj[1],
-                    'starting time': proj[2],
-                    'ending time': proj[3],
-                    'days': proj[4],
-                    'movie name': proj[5],
-                    'price': proj[6],
-                    'status': proj[7]
-                })
+            projections.append({
+                'code': proj[0],
+                'cinema hall': proj[1],
+                'starting time': proj[2],
+                'ending time': proj[3],
+                'days': proj[4],
+                'movie name': proj[5],
+                'price': proj[6],
+                'status': proj[7]
+            })
 
 
 def write_projections():
@@ -561,8 +584,9 @@ def print_table_projection(projection, appointment):
                     proj["ending time"],
                     proj["price"]
                 ]
-                table_data.append(table_row)
-                number += 1
+                if proj['status'] == 'active\n':
+                    table_data.append(table_row)
+                    number += 1
     table = tabulate(table_data, headers=headers, tablefmt="grid")
     print(table)
 
