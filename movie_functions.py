@@ -44,6 +44,8 @@ def generate_appointments_from_projections():
         code = projection_data[0]
         days = projection_data[4].split(', ')
 
+        if 'deleted' in projection_data:
+            continue
         for i in range(14):
             appointment_date = current_date + timedelta(days=i)
 
@@ -53,11 +55,11 @@ def generate_appointments_from_projections():
                 appointment_code = f"{code}{letter1}{letter2}"
                 appointment_format = f"{appointment_code}|{appointment_date.strftime('%d.%m.%Y')}|{'active'}"
 
-                if appointment_code not in existing_appointments:
+                if appointment_format not in existing_appointments:
                     appointments.append(appointment_format)
                     existing_appointments.add(appointment_code)
 
-    with open('projection_appointment.txt', 'w') as fin:
+    with open('projection_appointment.txt', 'a') as fin:
         for appointment in appointments:
             fin.write(appointment + '\n')
 
@@ -178,13 +180,13 @@ def delete_movie():
         if name.lower() == 'x':
             movies.clear()
             read_movies()
+            delete_appointmets_after_projection()
             break
         for movie in movies:
             if movie['name'].lower() == name.lower():
                 movie['status'] = 'deleted\n'
                 write_movies()
                 delete_projection_after_movie(name)
-                delete_appointmets_after_projection(name)
                 input('Movie succesefully deleted, this action will be loaded after you go back to your menu! Enter to go back...')
                 break
         else:
@@ -323,6 +325,7 @@ def delete_movie_projection():
             write_projections()
             projections.clear()
             read_projections()
+            delete_appointmets_after_projection()
             break
         for proj in projections:
             if projection == proj['code']:
@@ -341,16 +344,16 @@ def delete_projection_after_movie(movie_name):
             write_projections()
 
 
-def delete_appointmets_after_projection(movie_name):
+def delete_appointmets_after_projection():
+    proj_codes = []
     for proj in projections:
-        if proj['movie name'].lower() == movie_name.lower():
-            proj['status'] = 'deleted\n'
-            projection_code = proj['code']
-    for ap in apointments:
-        if projection_code in ap['code']:
-            ap['status'] = 'deleted\n'
-            write_appointments()
-
+        if proj['status'] == 'deleted\n':
+            proj_codes.append(proj['code'])
+    for proj in proj_codes:
+        for app in apointments:
+            if proj in app['code']:
+                app['status'] = 'deleted\n'
+    write_appointments()
 
 def change_projection_data():
     clear_screen1()

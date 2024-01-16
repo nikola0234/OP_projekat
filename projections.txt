@@ -1,5 +1,5 @@
-1111|A1|19:30|21:00|monday, tuesday, wednesday|Fight Club|4.30|activea
+1111|A1|19:30|21:00|monday, tuesday, wednesday|Fight Club|4.30|active
 1122|A2|19:00|20:30|monday, wednesday, friday|Fight Club|4.3|active
 2222|A1|18:00|21:00|monday, wednesday, friday|Inception|4.20|active
-3333|A1|12:30|13:30|monday, thursday, saturday|The Matrix|8.2|deleted
+3333|A1|12:30|13:30|monday, thursday, saturday|The Matrix|8.2|active
 4444|A2|19:00|22:00|monday, tuesday, friday|Fight Club|4.30|active
