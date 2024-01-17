@@ -1,0 +1,2 @@
+A1|10|10|active
+A2|10|8|active

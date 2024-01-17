@@ -57,4 +57,7 @@ if __name__ == '__main__':
     movie_functions.generate_appointments_from_projections()
     movie_functions.read_appointment()
     ticket_functions.read_tickets()
+    ticket_functions.read_halls()
+    ticket_functions.read_seats_for_appointment()
+    ticket_functions.generate_seats_for_appointment()
     main()

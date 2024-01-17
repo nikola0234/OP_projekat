@@ -33,9 +33,23 @@ def generate_appointments_from_projections():
         projections = fin.readlines()
 
     current_date = datetime.now().date()
+    existing_dates = []
+    existing_codes = []
+    existing_codes_app = []
 
     with open('projection_appointment.txt', 'r') as fin:
-        existing_appointments = set(line.strip() for line in fin)
+        for data in fin:
+            app_data = data.strip().split('|')
+
+            if len(app_data) == 4 and app_data[3] == 'active':
+                existing_dates.append(app_data[1])
+                existing_codes_app.append(app_data[0])
+
+    for proj in projections:
+        proj_data = proj.strip().split('|')
+        for code in existing_codes_app:
+            if proj_data[0] in code:
+                existing_codes.append(proj_data[0])
 
     appointments = []
     for projection in projections:
@@ -43,6 +57,7 @@ def generate_appointments_from_projections():
 
         code = projection_data[0]
         days = projection_data[4].split(', ')
+        hall = projection_data[1]
 
         if 'deleted' in projection_data:
             continue
@@ -53,11 +68,11 @@ def generate_appointments_from_projections():
                 letter1 = chr((i // 26) % 26 + ord('A'))
                 letter2 = chr((i % 26) + ord('A'))
                 appointment_code = f"{code}{letter1}{letter2}"
-                appointment_format = f"{appointment_code}|{appointment_date.strftime('%d.%m.%Y')}|{'active'}"
+                appointment_format = f"{appointment_code}|{appointment_date.strftime('%d.%m.%Y')}|{hall}|{'active'}"
 
-                if appointment_format not in existing_appointments:
+                if (appointment_date.strftime('%d.%m.%Y') not in existing_dates) or (code not in existing_codes):
                     appointments.append(appointment_format)
-                    existing_appointments.add(appointment_code)
+                    existing_dates.append(appointment_date.strftime('%d.%m.%Y'))
 
     with open('projection_appointment.txt', 'a') as fin:
         for appointment in appointments:
@@ -355,6 +370,7 @@ def delete_appointmets_after_projection():
                 app['status'] = 'deleted\n'
     write_appointments()
 
+
 def change_projection_data():
     clear_screen1()
     while True:
@@ -526,8 +542,10 @@ def read_appointment():
             apointments.append({
                 'code': ap[0],
                 'date': ap[1],
-                'status': ap[2]
+                'hall': ap[2],
+                'status': ap[3]
             })
+
 
 def write_appointments():
     with open('projection_appointment.txt', 'w') as fin:
@@ -535,6 +553,7 @@ def write_appointments():
             fin.write(
                 ap['code'] + '|' +
                 ap['date'] + '|' +
+                ap['hall'] + '|' +
                 ap['status']
             )
 
@@ -579,7 +598,7 @@ def print_table_projection(projection, appointment):
             if proj['code'] in appoint['code']:
                 table_row = [
                     number,
-                    proj["code"],
+                    appoint["code"],
                     proj["movie name"],
                     proj["cinema hall"],
                     appoint["date"],
