@@ -1,2 +1,12 @@
 milosdabic|1111AB|a1|16.1.2024|reserved
+NikolaBjelica|1111BN|a1|2024.01.18|reserved
+a|9999AN|a1|2024.01.18|reserved
+nikola1|1111BN|a1|18.01.2024|reserved
+nikola1|1111BN| a2|18.01.2024|reserved
+aaaa|1111BN|a2|18.01.2024|reserved
+ssss|1111BN|a1|18.01.2024|reserved
+man|1111BN|a3|18.01.2024|reserved
+1|1111AA|a1|18.01.2024|reserved
+aA|1111AA|a2|18.01.2024|reserved
+11|1111AA|a3|18.01.2024|reserved
 nikola1|1111AB|a2|16.1.2024|sold

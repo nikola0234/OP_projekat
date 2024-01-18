@@ -1,7 +1,7 @@
 import movie_functions
 from movie_functions import projections
 from movie_functions import apointments
-import tabulate
+import datetime
 
 tickets_reserved = []
 tickets_sold = []
@@ -24,6 +24,28 @@ def read_tickets():
                 tickets_reserved.append(ticket)
             elif 'sold' in ticket['status']:
                 tickets_sold.append(ticket)
+
+
+def write_tickets():
+    with open('tickets.txt', 'w') as fin:
+        for reserved in tickets_reserved:
+            fin.write(
+                reserved['name'] + '|' +
+                reserved['appointment'] + '|' +
+                reserved['seat'] + '|' +
+                reserved['date_sold'] + '|' +
+                reserved['status']
+            )
+
+        for sold in tickets_sold:
+            fin.write(
+                sold['name'] + '|' +
+                sold['appointment'] + '|' +
+                sold['seat'] + '|' +
+                sold['date_sold'] + '|' +
+                sold['status']
+            )
+
 
 
 def read_halls():
@@ -52,6 +74,15 @@ def read_seats_for_appointment():
             seats_for_appointment.append(data)
 
 
+def write_seats_for_appointment():
+    with open('appointment_seats.txt', 'w') as fin:
+        for data in seats_for_appointment:
+            fin.write(
+                data['code'] + '|' +
+                data['seats']
+            )
+
+
 def generate_seats_for_appointment():
     active_appointment_codes = []
     active_appointment_halls = []
@@ -74,7 +105,7 @@ def generate_seats_for_appointment():
                 rows = [chr(j) for j in range(ord('a'), ord('a') + int(hall_info['rows']))]
                 columns = [str(j) for j in range(1, 1 + int(hall_info['columns']))]
 
-                seat_str = ', '.join([f"{row}{column}" for row in rows for column in columns])
+                seat_str = ','.join([f"{row}{column}" for row in rows for column in columns])
 
                 appointments_seats = f"{code}|{seat_str}"
 
@@ -99,6 +130,7 @@ def print_seats(movie_code):
         if hall_name in hall['name']:
             num_rows = int(hall['columns'])
             num_columns = int(hall['rows'])
+
     matrix = [[None for _ in range(num_columns)] for _ in range(num_rows)]
     elements = input_string.split(',')
     for i in range(num_rows):
@@ -109,12 +141,66 @@ def print_seats(movie_code):
         print("|".join(row))
 
 
-def reserving_tickets():
+def reserving_tickets(user):
+    existing_app_codes = []
+    for code in seats_for_appointment:
+        existing_app_codes.append(code['code'])
+    if not user:
+        while True:
+            name_surname = input('You are not registered, please enter name and surname for your ticket reservation: ')
+            if not name_surname:
+                print('Name or surname must include at least one character. Please try again.')
+            else:
+                break
+
     while True:
+        print(seats_for_appointment)
         movie_functions.print_table_projection(projections, apointments)
-        print('Enter the code of appointment of movie projection you want to buy ticket for: ')
-        ticket_code = input('Enther the code here: ')
-        print_seats(ticket_code)
-        input('X')
+        print('Enter the code of appointment of movie projection you want to buy ticket for ')
+        while True:
+            ticket_code = input('Enter the code here: ')
+            if ticket_code not in existing_app_codes:
+                print(existing_app_codes)
+                print('Entered code not in existing appointments. Try again')
+            else:
+                break
+        for i in seats_for_appointment:
+            if ticket_code in i['code']:
+                seats = i['seats'].split(',')
+        while True:
+            print_seats(ticket_code)
+            print(seats)
+            chosen_seat = input('Choose one of best free seats for you: ')
+            if chosen_seat not in seats:
+                print('You entered filled or not existing seat, please try again.')
+            else:
+                break
+        for i, seat in enumerate(seats):
+            if seat == chosen_seat:
+                seats[i] = 'X'
 
+        result_seats = ','.join(seats)
+        for i in seats_for_appointment:
+            if ticket_code in i['code']:
+                i['seats'] = result_seats
+        write_seats_for_appointment()
 
+        if user:
+            new_ticket = {
+                'name': user['username'],
+                'appointment': ticket_code,
+                'seat': chosen_seat,
+                'date_sold':  datetime.datetime.now().strftime('%d.%m.%Y'),
+                'status': 'reserved\n'
+            }
+        else:
+            new_ticket = {
+                'name': name_surname,
+                'appointment': ticket_code,
+                'seat': chosen_seat,
+                'date_sold': datetime.datetime.now().strftime('%d.%m.%Y'),
+                'status': 'reserved\n'
+            }
+        tickets_reserved.append(new_ticket)
+        write_tickets()
+        break

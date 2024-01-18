@@ -13,7 +13,8 @@ def main():
         print('3. List of avaliable movies')
         print('4. Search for movie')
         print('5. Search for movie projection')
-        print("6. Quit the app")
+        print('6. Reserve ticket')
+        print("7. Quit the app")
         choice = input('Enter your choice: ')
 
         if choice == '1':
@@ -42,6 +43,9 @@ def main():
             user_func.clear_screen()
             movie_functions.search_projection()
         elif choice == '6':
+            user_func.clear_screen()
+            ticket_functions.reserving_tickets(False)
+        elif choice == '7':
             user_func.clear_screen()
             break
         else:

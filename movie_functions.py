@@ -68,6 +68,11 @@ def generate_appointments_from_projections():
                 letter1 = chr((i // 26) % 26 + ord('A'))
                 letter2 = chr((i % 26) + ord('A'))
                 appointment_code = f"{code}{letter1}{letter2}"
+
+                while appointment_code in existing_codes_app:
+                    letter1 = chr((ord(letter1) + 1 - ord('A')) % 26 + ord('A'))
+                    appointment_code = f"{code}{letter1}{letter2}"
+
                 appointment_format = f"{appointment_code}|{appointment_date.strftime('%d.%m.%Y')}|{hall}|{'active'}"
 
                 if (appointment_date.strftime('%d.%m.%Y') not in existing_dates) or (code not in existing_codes):
