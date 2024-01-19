@@ -29,8 +29,6 @@ def is_valid_date_format(input_str):
 
 
 def generate_appointments_from_projections():
-    with open('projections.txt', 'r') as fin:
-        projections = fin.readlines()
 
     current_date = datetime.now().date()
     existing_dates = []
@@ -46,20 +44,18 @@ def generate_appointments_from_projections():
                 existing_codes_app.append(app_data[0])
 
     for proj in projections:
-        proj_data = proj.strip().split('|')
         for code in existing_codes_app:
-            if proj_data[0] in code:
-                existing_codes.append(proj_data[0])
+            if proj['code'] in code:
+                existing_codes.append(proj['code'])
 
     appointments = []
     for projection in projections:
-        projection_data = projection.strip().split('|')
 
-        code = projection_data[0]
-        days = projection_data[4].split(', ')
-        hall = projection_data[1]
+        code = projection['code']
+        days = projection['days'].split(', ')
+        hall = projection['cinema hall']
 
-        if 'deleted' in projection_data:
+        if 'deleted' in projection['status']:
             continue
         for i in range(14):
             appointment_date = current_date + timedelta(days=i)
@@ -83,6 +79,18 @@ def generate_appointments_from_projections():
         for appointment in appointments:
             fin.write(appointment + '\n')
 
+
+def delete_appointments_after_date_pass():
+    for appointnment in apointments:
+        appointment_date = appointnment['date']
+        current_date = datetime.now()
+        formatted_date = datetime.strptime(appointment_date, "%d.%m.%Y")
+
+        if formatted_date.date() < current_date.date():
+            appointnment['status'] = 'deleted\n'
+        else:
+            continue
+        write_appointments()
 
 def print_movies_table(movies):
     headers = ["#", "Name", "Genre", "Duration(min)", "Film director", "Main roles", "Country of production", "Year of creation", "Summary"]
@@ -611,7 +619,7 @@ def print_table_projection(projection, appointment):
                     proj["ending time"],
                     proj["price"]
                 ]
-                if proj['status'] == 'active\n':
+                if appoint['status'] == 'active\n':
                     table_data.append(table_row)
                     number += 1
     table = tabulate(table_data, headers=headers, tablefmt="grid")

@@ -2,6 +2,7 @@ import movie_functions
 from movie_functions import projections
 from movie_functions import apointments
 import datetime
+import tabulate
 
 tickets_reserved = []
 tickets_sold = []
@@ -47,7 +48,6 @@ def write_tickets():
             )
 
 
-
 def read_halls():
     with open('cinema_halls.txt', 'r') as fin:
         for line in fin:
@@ -81,6 +81,12 @@ def write_seats_for_appointment():
                 data['code'] + '|' +
                 data['seats']
             )
+
+
+def search_for_date_of_appointment(code):
+    for appointment in apointments:
+        if code == appointment['code']:
+            return appointment['date']
 
 
 def generate_seats_for_appointment():
@@ -118,7 +124,80 @@ def generate_seats_for_appointment():
     print(seats_for_appointment)
 
 
+def print_reserved_tickets_user(user):
+    headers = ["#", "Appointment code", "Movie name", "Date of appointment", "Starting time", "Ending time", "Seat" ]
+    table_data = []
+    num = 1
+    for ticket in tickets_reserved:
+        for projection in projections:
+            if ticket['name'] == user['username']:
+                if projection['code'] in ticket['appointment']:
+                    app_date = search_for_date_of_appointment(ticket['appointment'])
+                    table_row = [
+                        num,
+                        ticket['appointment'],
+                        projection['movie name'],
+                        app_date,
+                        projection['starting time'],
+                        projection['ending time'],
+                        ticket['seat']
+                    ]
+
+                    table_data.append(table_row)
+                    num += 1
+    table = tabulate.tabulate(table_data, headers= headers, tablefmt= "grid")
+    print(table)
+
+
+def print_reserved_tickets_employee(user):
+    headers = ["#", "Appointment code","Username/Name and surname", "Movie name", "Date of appointment", "Starting time", "Ending time", "Seat", "Ticket status"]
+    table_data = []
+    num = 1
+    for ticket_r in tickets_reserved:
+        for projection in projections:
+            if projection['code'] in ticket_r['appointment']:
+                app_date = search_for_date_of_appointment(ticket_r['appointment'])
+                table_row = [
+                    num,
+                    ticket_r['appointment'],
+                    ticket_r['name'],
+                    projection['movie name'],
+                    app_date,
+                    projection['starting time'],
+                    projection['ending time'],
+                    ticket_r['seat'],
+                    ticket_r['status']
+                ]
+
+                table_data.append(table_row)
+                num += 1
+    for ticket_s in tickets_sold:
+        for projection in projections:
+            if projection['code'] in ticket_s['appointment']:
+                app_date = search_for_date_of_appointment(ticket_s['appointment'])
+                table_row = [
+                    num,
+                    ticket_s['appointment'],
+                    ticket_s['name'],
+                    projection['movie name'],
+                    app_date,
+                    projection['starting time'],
+                    projection['ending time'],
+                    ticket_s['seat'],
+                    ticket_s['status']
+                ]
+
+                table_data.append(table_row)
+                num += 1
+    table = tabulate.tabulate(table_data, headers= headers, tablefmt= "grid")
+    print(table)
+
+
 def print_seats(movie_code):
+    hall_name = None
+    num_columns = None
+    num_rows = None
+    input_string = None
     for app in seats_for_appointment:
         if app['code'] == movie_code:
             input_string = app['seats']
@@ -126,25 +205,27 @@ def print_seats(movie_code):
     for app in apointments:
         if app['code'] == movie_code:
             hall_name = app['hall']
+
     for hall in halls:
         if hall_name in hall['name']:
             num_rows = int(hall['columns'])
             num_columns = int(hall['rows'])
-
     matrix = [[None for _ in range(num_columns)] for _ in range(num_rows)]
     elements = input_string.split(',')
     for i in range(num_rows):
         for j in range(num_columns):
             matrix[i][j] = elements[j * num_rows + i]
-
     for row in matrix:
         print("|".join(row))
 
 
 def reserving_tickets(user):
+    seats = None
+    name_surname = None
     existing_app_codes = []
-    for code in seats_for_appointment:
-        existing_app_codes.append(code['code'])
+    for code in apointments:
+        if code['status'] == 'active\n':
+            existing_app_codes.append(code['code'])
     if not user:
         while True:
             name_surname = input('You are not registered, please enter name and surname for your ticket reservation: ')
@@ -152,18 +233,28 @@ def reserving_tickets(user):
                 print('Name or surname must include at least one character. Please try again.')
             else:
                 break
-
+    if user['role'] == 'employee\n':
+        while True:
+            name_surname = input('Enter name and surname for unregistered user or username for registered user: ')
+            if not name_surname:
+                print('Name or surname must include at least one character. Please try again.')
+            else:
+                break
     while True:
         print(seats_for_appointment)
         movie_functions.print_table_projection(projections, apointments)
-        print('Enter the code of appointment of movie projection you want to buy ticket for ')
+        print('Enter the code of appointment of movie projection you want to buy ticket for(x to go back) ')
         while True:
             ticket_code = input('Enter the code here: ')
+            if ticket_code.lower() == 'x':
+                break
             if ticket_code not in existing_app_codes:
                 print(existing_app_codes)
                 print('Entered code not in existing appointments. Try again')
             else:
                 break
+        if ticket_code.lower() == 'x':
+            break
         for i in seats_for_appointment:
             if ticket_code in i['code']:
                 seats = i['seats'].split(',')
@@ -184,8 +275,7 @@ def reserving_tickets(user):
             if ticket_code in i['code']:
                 i['seats'] = result_seats
         write_seats_for_appointment()
-
-        if user:
+        if user and user['role'] != 'employee\n':
             new_ticket = {
                 'name': user['username'],
                 'appointment': ticket_code,
@@ -203,4 +293,26 @@ def reserving_tickets(user):
             }
         tickets_reserved.append(new_ticket)
         write_tickets()
-        break
+        cont = input('Succesefully reserved a ticket, press enter to reserve more or press x to go back to menu: ')
+        if cont.lower() == 'x':
+            break
+
+
+def check_reserved_tickets(user):
+    while True:
+        print('These are your current reserved tickets:')
+        print_reserved_tickets_user(user)
+        back = input('Enter x to go back: ')
+
+        if back.lower() == 'x':
+            break
+
+
+def check_reserved_tickets_employee(user):
+    while True:
+        print('List of reserved and sold tickets:')
+        print_reserved_tickets_employee(user)
+        back = input('Enter x to go back: ')
+
+        if back.lower() == 'x':
+            break

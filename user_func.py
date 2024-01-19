@@ -247,41 +247,9 @@ def employee_menu(logged_in):
         print('3. List of avaliable movies')
         print('4. Search for movies')
         print('5. Search for movie projection')
-        print('6. Quit the app')
-        choice = input('Enter your choice: ')
-        if choice == '1':
-            logged_in = False
-            main()
-        elif choice == '2':
-            change_data(user)
-        elif choice == '3':
-            clear_screen()
-            movie_functions.avaliable_movies()
-        elif choice == '4':
-            clear_screen()
-            movie_functions.search_movie()
-        elif choice == '5':
-            clear_screen()
-            movie_functions.search_projection()
-        elif choice == '6':
-            clear_screen()
-            return
-        else:
-            clear_screen()
-            print("Not existing choice. Try again.")
-
-
-def user_menu(logged_in):
-    clear_screen()
-    while logged_in:
-        print('Welcome to user menu.\n')
-        print('1. Logging out')
-        print('2. Change your personal data')
-        print('3. List of avaliable movies')
-        print('4. Search for movies')
-        print('5. Search for movie projection')
         print('6. Reserve ticket')
-        print('7. Quit the app')
+        print('7. List of tickets')
+        print('8. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -301,6 +269,50 @@ def user_menu(logged_in):
             clear_screen()
             ticket_functions.reserving_tickets(user)
         elif choice == '7':
+            clear_screen()
+            ticket_functions.check_reserved_tickets_employee(user)
+        elif choice == '8':
+            clear_screen()
+            return
+        else:
+            clear_screen()
+            print("Not existing choice. Try again.")
+
+
+def user_menu(logged_in):
+    clear_screen()
+    while logged_in:
+        print('Welcome to user menu.\n')
+        print('1. Logging out')
+        print('2. Change your personal data')
+        print('3. List of avaliable movies')
+        print('4. Search for movies')
+        print('5. Search for movie projection')
+        print('6. Reserve ticket')
+        print('7. Check reservations')
+        print('8. Quit the app')
+        choice = input('Enter your choice: ')
+        if choice == '1':
+            logged_in = False
+            main()
+        elif choice == '2':
+            change_data(user)
+        elif choice == '3':
+            clear_screen()
+            movie_functions.avaliable_movies()
+        elif choice == '4':
+            clear_screen()
+            movie_functions.search_movie()
+        elif choice == '5':
+            clear_screen()
+            movie_functions.search_projection()
+        elif choice == '6':
+            clear_screen()
+            ticket_functions.reserving_tickets(user)
+        elif choice == '7':
+            clear_screen()
+            ticket_functions.check_reserved_tickets(user)
+        elif choice == '8':
             clear_screen()
             break
         else:
