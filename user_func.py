@@ -290,7 +290,8 @@ def user_menu(logged_in):
         print('5. Search for movie projection')
         print('6. Reserve ticket')
         print('7. Check reservations')
-        print('8. Quit the app')
+        print('8. Cancel reservation')
+        print('9. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -313,6 +314,9 @@ def user_menu(logged_in):
             clear_screen()
             ticket_functions.check_reserved_tickets(user)
         elif choice == '8':
+            clear_screen()
+            ticket_functions.canceling_reservation(user)
+        elif choice == '9':
             clear_screen()
             break
         else:

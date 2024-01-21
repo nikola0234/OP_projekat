@@ -1,6 +1,6 @@
 nikola99|9999AN|a2|19.01.2024|reserved
 nikola99|9999AN|a7|19.01.2024|reserved
-nikola1|9999AN|a1|19.01.2024|reserved
 nikola99|9999AN|a3|19.01.2024|reserved
-nikola1|9999AN|a4|19.01.2024|reserved
-nikola1|1111AD|a1|19.01.2024|reserved
+nikola1|9999AN|a4|21.01.2024|reserved
+nikola1|3333BN|a3|21.01.2024|canceled
+nikola1|3333BN|a4|21.01.2024|canceled
