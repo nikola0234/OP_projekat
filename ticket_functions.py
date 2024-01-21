@@ -330,7 +330,7 @@ def canceling_reservation(user):
         print(existing_tickets)
         print('These are your current reserved tickets:')
         print_reserved_tickets_user(user)
-
+        deleted = False
         while True:
             ticket_to_cancel = input('Enter the appointment code for reservation you want to cancel(x to go back): ')
 
@@ -343,15 +343,18 @@ def canceling_reservation(user):
         if ticket_to_cancel.lower() == 'x':
             break
         for ticket in tickets_reserved:
-            if ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) < 2:
+            if ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) < 2 and not deleted:
                 ticket['status'] = 'canceled\n'
                 seat_to_write = ticket['seat']
                 write_tickets()
-            elif ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2:
+            elif ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
                 seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
-                if ticket['appointment'] == ticket_to_cancel and ticket['seat'] == seat_to_write:
-                    ticket['status'] = 'canceled\n'
-                    write_tickets()
+                for ticket1 in tickets_reserved:
+                    if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
+                        ticket1['status'] = 'canceled\n'
+                        existing_tickets.remove(ticket['appointment'])
+                        deleted = True
+                        write_tickets()
         for app in seats_for_appointment:
             if app['code'] == ticket_to_cancel:
                 col, row = seat_to_write[0], seat_to_write[1:]
@@ -381,6 +384,7 @@ def canceling_reservation(user):
                 write_seats_for_appointment()
 
         print('Succesefully canceled a ticket.')
+        deleted = False
         cont = input('Continue canceling ot X to go back to menu: ')
 
         if cont.lower() == 'x':
