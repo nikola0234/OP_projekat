@@ -6,6 +6,7 @@ import tabulate
 
 tickets_reserved = []
 tickets_sold = []
+tickets_canceled = []
 seats_for_appointment = []
 halls = []
 
@@ -25,6 +26,8 @@ def read_tickets():
                 tickets_reserved.append(ticket)
             elif 'sold' in ticket['status']:
                 tickets_sold.append(ticket)
+            elif 'canceled' in ticket['status']:
+                tickets_canceled.append(ticket)
 
 
 def write_tickets():
@@ -45,6 +48,15 @@ def write_tickets():
                 sold['seat'] + '|' +
                 sold['date_sold'] + '|' +
                 sold['status']
+            )
+
+        for canceled in tickets_canceled:
+            fin.write(
+                canceled['name'] + '|' +
+                canceled['appointment'] + '|' +
+                canceled['seat'] + '|' +
+                canceled['date_sold'] + '|' +
+                canceled['status']
             )
 
 
@@ -169,8 +181,9 @@ def print_reserved_tickets_employee(user):
                     ticket_r['status']
                 ]
 
-                table_data.append(table_row)
-                num += 1
+                if 'reserved' in ticket_r['status'] or 'sold' in ticket_r['status']:
+                    table_data.append(table_row)
+                    num += 1
     for ticket_s in tickets_sold:
         for projection in projections:
             if projection['code'] in ticket_s['appointment']:
@@ -187,8 +200,9 @@ def print_reserved_tickets_employee(user):
                     ticket_s['status']
                 ]
 
-                table_data.append(table_row)
-                num += 1
+                if 'reserved' in ticket_s['status'] or 'sold' in ticket_s['status']:
+                    table_data.append(table_row)
+                    num += 1
     table = tabulate.tabulate(table_data, headers= headers, tablefmt= "grid")
     print(table)
 
@@ -241,7 +255,6 @@ def reserving_tickets(user):
             else:
                 break
     while True:
-        print(seats_for_appointment)
         movie_functions.print_table_projection(projections, apointments)
         print('Enter the code of appointment of movie projection you want to buy ticket for(x to go back) ')
         while True:
@@ -289,6 +302,14 @@ def reserving_tickets(user):
                 'appointment': ticket_code,
                 'seat': chosen_seat,
                 'date_sold':  datetime.datetime.now().strftime('%d.%m.%Y'),
+                'status': 'reserved\n'
+            }
+        else:
+            new_ticket = {
+                'name': name_surname,
+                'appointment': ticket_code,
+                'seat': chosen_seat,
+                'date_sold': datetime.datetime.now().strftime('%d.%m.%Y'),
                 'status': 'reserved\n'
             }
         tickets_reserved.append(new_ticket)
@@ -342,19 +363,25 @@ def canceling_reservation(user):
                 break
         if ticket_to_cancel.lower() == 'x':
             break
-        for ticket in tickets_reserved:
-            if ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) < 2 and not deleted:
-                ticket['status'] = 'canceled\n'
-                seat_to_write = ticket['seat']
-                write_tickets()
-            elif ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
-                seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
-                for ticket1 in tickets_reserved:
-                    if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
-                        ticket1['status'] = 'canceled\n'
-                        existing_tickets.remove(ticket['appointment'])
-                        deleted = True
-                        write_tickets()
+        while True:
+            for ticket in tickets_reserved:
+                if ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) < 2 and not deleted:
+                    ticket['status'] = 'canceled\n'
+                    seat_to_write = ticket['seat']
+                    deleted = True
+                    write_tickets()
+                elif ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
+                    seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
+                    for ticket1 in tickets_reserved:
+                        if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
+                            ticket1['status'] = 'canceled\n'
+                            existing_tickets.remove(ticket['appointment'])
+                            deleted = True
+                            write_tickets()
+            if deleted:
+                break
+            else:
+                print('Entered seat is not among tickets. Try again.')
         for app in seats_for_appointment:
             if app['code'] == ticket_to_cancel:
                 col, row = seat_to_write[0], seat_to_write[1:]
@@ -387,5 +414,171 @@ def canceling_reservation(user):
         deleted = False
         cont = input('Continue canceling ot X to go back to menu: ')
 
+        if cont.lower() == 'x':
+            break
+
+
+def canceling_tickets_employee(user):
+    existing_tickets = []
+
+    deleted = False
+
+    for reserved in tickets_reserved:
+        existing_tickets.append(reserved['appointment'])
+
+    for sold in tickets_sold:
+        existing_tickets.append(sold['appointment'])
+
+    while True:
+        print(existing_tickets)
+        print('These are tickets that you can cancel:')
+        print_reserved_tickets_employee(user)
+        deleted = False
+        while True:
+            ticket_to_cancel = input('Enter the appointment code for reservation you want to cancel(x to go back): ')
+
+            if ticket_to_cancel.lower() == 'x':
+                break
+            if ticket_to_cancel not in existing_tickets:
+                print('There is no reservation with that code, please try again.')
+            else:
+                break
+        if ticket_to_cancel.lower() == 'x':
+            break
+
+        while True:
+            for ticket in tickets_reserved:
+                if ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) < 2 and not deleted:
+                    ticket['status'] = 'canceled\n'
+                    seat_to_write = ticket['seat']
+                    deleted = True
+                    write_tickets()
+                elif ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
+                    seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
+                    for ticket1 in tickets_reserved:
+                        if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
+                            ticket1['status'] = 'canceled\n'
+                            existing_tickets.remove(ticket['appointment'])
+                            deleted = True
+                            write_tickets()
+            if deleted:
+                break
+            for ticket in tickets_sold:
+                if ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) < 2 and not deleted:
+                    ticket['status'] = 'canceled\n'
+                    seat_to_write = ticket['seat']
+                    deleted = True
+                    write_tickets()
+                elif ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
+                    seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
+                    for ticket1 in tickets_sold:
+                        if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
+                            ticket1['status'] = 'canceled\n'
+                            existing_tickets.remove(ticket['appointment'])
+                            deleted = True
+                            write_tickets()
+                            break
+            if deleted:
+                break
+            else:
+                print('Entered seat not among tickets. Try again.')
+        for app in seats_for_appointment:
+            if app['code'] == ticket_to_cancel:
+                col, row = seat_to_write[0], seat_to_write[1:]
+
+                col_index = ord(col) - ord('a')
+                row_index = int(row)
+
+                for appointment in apointments:
+                    if app['code'] == appointment['code']:
+                        hall_name = appointment['hall']
+
+                for hall in halls:
+                    if hall['name'] == hall_name:
+                        seats_per_row = hall['columns']
+
+                position = col_index * int(seats_per_row) + row_index - 1
+
+                seats = app['seats']
+                list_of_seats = seats.split(',')
+
+                list_of_seats[position] = seat_to_write
+
+                joined_seats = ','.join(list_of_seats)
+
+                app['seats'] = joined_seats
+
+                write_seats_for_appointment()
+
+        print('Succesefully canceled a ticket.')
+        deleted = False
+        cont = input('Continue canceling ot X to go back to menu: ')
+
+        if cont.lower() == 'x':
+            break
+
+
+def direct_selling_tickets():
+    existing_app_codes = []
+    seats = None
+    for code in apointments:
+        if code['status'] == 'active\n':
+            existing_app_codes.append(code['code'])
+    while True:
+        print('Currently avaliable appointments: ')
+        movie_functions.print_table_projection(projections, apointments)
+
+        print('Enter the code of appointment of movie projection you want to sell ticket for(x to go back) ')
+        while True:
+            ticket_code = input('Enter the code here: ')
+            if ticket_code.lower() == 'x':
+                break
+            if ticket_code not in existing_app_codes:
+                print(existing_app_codes)
+                print('Entered code not in existing appointments. Try again')
+            else:
+                break
+        if ticket_code.lower() == 'x':
+            break
+        for i in seats_for_appointment:
+            if ticket_code in i['code']:
+                seats = i['seats'].split(',')
+
+        while True:
+            name_surname = input('Enter name and surname for unregistered user or username for registered user: ')
+            if not name_surname:
+                print('Name or surname must include at least one character. Please try again.')
+            else:
+                break
+
+        while True:
+            print_seats(ticket_code)
+            print(seats)
+            chosen_seat = input('Choose one of best free seats for customer: ')
+            if chosen_seat not in seats:
+                print('You entered filled or not existing seat, please try again.')
+            else:
+                break
+        for i, seat in enumerate(seats):
+            if seat == chosen_seat:
+                seats[i] = 'X'
+
+        result_seats = ','.join(seats)
+        for i in seats_for_appointment:
+            if ticket_code in i['code']:
+                i['seats'] = result_seats
+        write_seats_for_appointment()
+
+        new_ticket = {
+            'name': name_surname,
+            'appointment': ticket_code,
+            'seat': chosen_seat,
+            'date_sold': datetime.datetime.now().strftime('%d.%m.%Y'),
+            'status': 'sold\n'
+        }
+
+        tickets_sold.append(new_ticket)
+        write_tickets()
+        cont = input('Succesefully sold a ticket, press enter to sell more or press x to go back to menu: ')
         if cont.lower() == 'x':
             break
