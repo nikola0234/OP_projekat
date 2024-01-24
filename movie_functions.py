@@ -92,6 +92,7 @@ def delete_appointments_after_date_pass():
             continue
         write_appointments()
 
+
 def print_movies_table(movies):
     headers = ["#", "Name", "Genre", "Duration(min)", "Film director", "Main roles", "Country of production", "Year of creation", "Summary"]
     table_data = []

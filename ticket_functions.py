@@ -582,3 +582,54 @@ def direct_selling_tickets():
         cont = input('Succesefully sold a ticket, press enter to sell more or press x to go back to menu: ')
         if cont.lower() == 'x':
             break
+
+
+def selling_reserved_tickets(user):
+    existing_reserved_tickets = []
+    sold = False
+    for ticket in tickets_reserved:
+        if ticket['status'] != 'canceled\n':
+            existing_reserved_tickets.append(ticket['appointment'])
+    current_date = datetime.datetime.now()
+    formatted_date = current_date.strftime("%d.%m.%Y")
+
+    while True:
+        print('Currently reserved tickets: ')
+        print_reserved_tickets_employee(user)
+
+        while True:
+            ticket_code = input('Enter the code of ticket you want to sell here(x to back): ')
+            if ticket_code.lower() == 'x':
+                break
+            if ticket_code not in existing_reserved_tickets:
+                print('Entered code not in existing reserved tickets. Try again')
+            else:
+                break
+        if ticket_code.lower() == 'x':
+            break
+
+        while not sold:
+            for ticket in tickets_reserved:
+                if ticket['appointment'] == ticket_code and existing_reserved_tickets.count(ticket['appointment']) < 2 and not sold:
+                    ticket['status'] = 'sold\n'
+                    ticket['date_sold'] = formatted_date
+                    write_tickets()
+                    sold = True
+                elif ticket['appointment'] == ticket_code and existing_reserved_tickets.count(ticket['appointment']) >= 2 and not sold:
+                    seat_to_sell = input('There are more tickets for same appointment, enter wich seat you want to sell: ')
+                    for ticket1 in tickets_reserved:
+                        if ticket1['appointment'] == ticket_code and ticket1['seat'] == seat_to_sell:
+                            ticket1['status'] = 'sold\n'
+                            ticket1['date_sold'] = formatted_date
+                            existing_reserved_tickets.remove(ticket['appointment'])
+                            write_tickets()
+                            sold = True
+                if sold:
+                    break
+                else:
+                    print('Entered seat is not among reserved tickets. Try again.')
+
+        sold = False
+        cont = input('Succesefully sold a ticket, press enter to sell more or press x to go back to menu: ')
+        if cont.lower() == 'x':
+            break
