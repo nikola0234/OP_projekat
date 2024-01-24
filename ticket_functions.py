@@ -161,11 +161,11 @@ def print_reserved_tickets_user(user):
     print(table)
 
 
-def print_reserved_tickets_employee(user):
+def print_reserved_tickets_employee(reserved, sold):
     headers = ["#", "Appointment code","Username/Name and surname", "Movie name", "Date of appointment", "Starting time", "Ending time", "Seat", "Ticket status"]
     table_data = []
     num = 1
-    for ticket_r in tickets_reserved:
+    for ticket_r in reserved:
         for projection in projections:
             if projection['code'] in ticket_r['appointment']:
                 app_date = search_for_date_of_appointment(ticket_r['appointment'])
@@ -184,7 +184,7 @@ def print_reserved_tickets_employee(user):
                 if 'reserved' in ticket_r['status'] or 'sold' in ticket_r['status']:
                     table_data.append(table_row)
                     num += 1
-    for ticket_s in tickets_sold:
+    for ticket_s in sold:
         for projection in projections:
             if projection['code'] in ticket_s['appointment']:
                 app_date = search_for_date_of_appointment(ticket_s['appointment'])
@@ -332,7 +332,7 @@ def check_reserved_tickets(user):
 def check_reserved_tickets_employee(user):
     while True:
         print('List of reserved and sold tickets:')
-        print_reserved_tickets_employee(user)
+        print_reserved_tickets_employee(tickets_reserved, tickets_sold)
         back = input('Enter x to go back: ')
 
         if back.lower() == 'x':
@@ -422,6 +422,9 @@ def canceling_tickets_employee(user):
     existing_tickets = []
 
     deleted = False
+    seat_to_write = None
+    hall_name = None
+    seats_per_row = None
 
     for reserved in tickets_reserved:
         existing_tickets.append(reserved['appointment'])
@@ -432,7 +435,7 @@ def canceling_tickets_employee(user):
     while True:
         print(existing_tickets)
         print('These are tickets that you can cancel:')
-        print_reserved_tickets_employee(user)
+        print_reserved_tickets_employee(tickets_reserved, tickets_sold)
         deleted = False
         while True:
             ticket_to_cancel = input('Enter the appointment code for reservation you want to cancel(x to go back): ')
@@ -595,7 +598,7 @@ def selling_reserved_tickets(user):
 
     while True:
         print('Currently reserved tickets: ')
-        print_reserved_tickets_employee(user)
+        print_reserved_tickets_employee(tickets_reserved, tickets_sold)
 
         while True:
             ticket_code = input('Enter the code of ticket you want to sell here(x to back): ')
@@ -633,3 +636,30 @@ def selling_reserved_tickets(user):
         cont = input('Succesefully sold a ticket, press enter to sell more or press x to go back to menu: ')
         if cont.lower() == 'x':
             break
+
+
+def filter_tickets(choice):
+    matching_tickets = []
+
+
+def search_for_ticket(user):
+    while True:
+        print_reserved_tickets_employee(tickets_reserved, tickets_sold)
+
+        print('Enter categorie for searching: \n')
+        print('1. Appointment code')
+        print('2. Username/Name and surname')
+        print('3. Date of appointment')
+        print('4. Starting time')
+        print('5. Ending time')
+        print('6. Ticket status (reserved/sold)')
+        print('7. Back to the main menu')
+
+        choice = input('Enter your choice: ')
+
+        if choice == '7':
+            break
+        elif choice in '1,2,3,4,5,6'.split(','):
+            filter_tickets(choice)
+        else:
+            print('Not existing choice. Try again')

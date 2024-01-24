@@ -1,5 +1,7 @@
-nikola99|1111BN|a9|24.01.2024|sold
 nikola1|1111BN|d10|24.01.2024|reserved
+nikola1|1111AN|a8|24.01.2024|reserved
+nikola1|1111AN|j9|24.01.2024|sold
+nikola99|1111BN|a9|24.01.2024|sold
 nikola|1111BN|a10|24.01.2024|sold
 nikola|1111AN|d10|24.01.2024|sold
 nikola99|1111BN|b10|24.01.2024|sold
