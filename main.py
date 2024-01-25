@@ -1,6 +1,7 @@
 import user_func
 import movie_functions
 import ticket_functions
+import validations
 
 
 def main():

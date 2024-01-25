@@ -1,4 +1,5 @@
 import movie_functions
+import validations
 from movie_functions import projections
 from movie_functions import apointments
 import datetime
@@ -162,7 +163,7 @@ def print_reserved_tickets_user(user):
 
 
 def print_reserved_tickets_employee(reserved, sold):
-    headers = ["#", "Appointment code","Username/Name and surname", "Movie name", "Date of appointment", "Starting time", "Ending time", "Seat", "Ticket status"]
+    headers = ["#", "Appointment code", "Username/Name and surname", "Movie name", "Date of appointment", "Starting time", "Ending time", "Seat", "Ticket status"]
     table_data = []
     num = 1
     for ticket_r in reserved:
@@ -640,6 +641,163 @@ def selling_reserved_tickets(user):
 
 def filter_tickets(choice):
     matching_tickets = []
+    value = choice_keys[choice]
+    filtered = False
+
+    if choice in '1,2'.split(','):
+        while True:
+            data_input = input('Enter the appointment code for ticket you are searching(x to go back): ')
+            if validations.is_empty_string(data_input):
+                break
+            elif data_input == 'x':
+                break
+            else:
+                print('Empty string is not valid input. Try again')
+
+    elif choice in '4,5'.split(','):
+        while True:
+            user_input = input(f'Write the {value} you are interested in(x to go back): ')
+            if validations.is_valid_time_format(user_input):
+                if choice == '4':
+                    filter_starting_time(user_input)
+                    filtered = True
+                elif choice == '5':
+                    filter_ending_time(user_input)
+                    filtered = True
+                break
+            elif user_input.lower() == 'x':
+                break
+            else:
+                print('Not a valid time format. Correct example: 20:00')
+    elif choice == '3':
+        while True:
+            date_input = input(f'Write the date you are interested in(x to go back): ')
+            if validations.is_valid_date_format(date_input):
+                check_date_appointment(date_input)
+                filtered = True
+                break
+            elif date_input.lower() == 'x':
+                break
+            else:
+                print('Not a valid date format. Correct example: 12.12.2024')
+    elif choice == '6':
+        while True:
+            data_input = input(f'Write the ticket status you are interested in(reserved/sold)(x to go back): ')
+            if validations.reserved_sold(data_input):
+                break
+            elif data_input.lower() -- 'x':
+                break
+            else:
+                print('Not a valid ticket status. Possible input is reserved or sold.')
+    if not filtered:
+        matching_tickets_reserved = [ticket for ticket in tickets_reserved if ticket_filter_functions[value](data_input, ticket[value])]
+        matching_tickets_sold = [ticket for ticket in tickets_sold if ticket_filter_functions[value](data_input, ticket[value])]
+        if matching_tickets_reserved or matching_tickets_sold:
+            print('Tickets that fit your willing: \n')
+            print_reserved_tickets_employee(matching_tickets_reserved, matching_tickets_sold)
+            input('Enter to continue...')
+        else:
+            input('Unfortunelly there is no ticket that fits your willing.')
+            return
+    filtered = False
+
+
+def filter_code(user_input, app_code):
+    return user_input == app_code
+
+
+def filter_name(user_input, name):
+    return user_input == name
+
+
+def filter_status(user_input, status):
+    return user_input in status
+
+
+def check_date_appointment(user_input):
+    tickets_r = []
+    tickets_s = []
+
+    for apointment in apointments:
+        if user_input == apointment["date"].strip():
+            for ticket in tickets_reserved:
+                if ticket['appointment'] in apointment['code']:
+                    tickets_r.append(ticket)
+    for apointment in apointments:
+        if user_input == apointment["date"].strip():
+            for ticket in tickets_sold:
+                if ticket['appointment'] in apointment['code']:
+                    tickets_s.append(ticket)
+
+            print_reserved_tickets_employee(tickets_r, tickets_s)
+            input('Enter to continue...')
+            return
+    print('Unfortunaly there is no movie ticket for that date.')
+    return
+
+
+def filter_starting_time(user_input):
+    tickets_r = []
+    tickets_s = []
+
+    for projection in projections:
+        if user_input == projection['starting time']:
+            for ticket in tickets_reserved:
+                if projection['code'] in ticket['appointment']:
+                    tickets_r.append(ticket)
+    for projection in projections:
+        if user_input == projection['starting time']:
+            for ticket in tickets_sold:
+                if projection['code'] in ticket['appointment']:
+                    tickets_s.append(ticket)
+
+            print_reserved_tickets_employee(tickets_r, tickets_s)
+            input('Enter to continue...')
+            return
+    print('Unfortunaly there is no movie ticket for that starting time.')
+    return
+
+
+def filter_ending_time(user_input):
+    tickets_r = []
+    tickets_s = []
+
+    for projection in projections:
+        if user_input == projection['ending time']:
+            for ticket in tickets_reserved:
+                if projection['code'] in ticket['appointment']:
+                    tickets_r.append(ticket)
+    for projection in projections:
+        if user_input == projection['ending time']:
+            for ticket in tickets_sold:
+                if projection['code'] in ticket['appointment']:
+                    tickets_s.append(ticket)
+
+            print_reserved_tickets_employee(tickets_r, tickets_s)
+            input('Enter to continue...')
+            return
+    print('Unfortunaly there is no movie ticket for that starting time.')
+    return
+
+
+choice_keys = {
+    '1': 'appointment',
+    '2': 'name',
+    '3': 'date_app',
+    '4': 'starting time',
+    '5': 'ending time',
+    '6': 'status'
+
+}
+
+ticket_filter_functions = {
+    'appointment': filter_code,
+    'name': filter_name,
+    'date_app': check_date_appointment,
+    'starting time': filter_starting_time,
+    'ending time': filter_ending_time,
+    'status': filter_status
+}
 
 
 def search_for_ticket(user):

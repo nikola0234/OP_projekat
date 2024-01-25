@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timedelta
 from tabulate import tabulate
 import re
+import validations
 
 
 def clear_screen1():
@@ -13,19 +14,6 @@ movies = []
 apointments = []
 projections = []
 cinema_halls = []
-
-
-def is_valid_time_format(input_str):
-    time_pattern = re.compile(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$')
-    return bool(re.match(time_pattern, input_str))
-
-
-def is_valid_date_format(input_str):
-        try:
-            datetime_object = datetime.strptime(input_str, '%d.%m.%Y')
-            return True
-        except ValueError:
-            return False
 
 
 def generate_appointments_from_projections():
@@ -308,7 +296,7 @@ def add_new_projection():
 
         while True:
             starting_time = input('Enter the starting time (format HH:MM): ')
-            if is_valid_time_format(starting_time):
+            if validations.is_valid_time_format(starting_time):
                 break
             else:
                 print('Not a valid time format. Correct example: 20:00')
@@ -317,7 +305,7 @@ def add_new_projection():
 
         while True:
             ending_time = input('Enter the ending time (format HH:MM): ')
-            if is_valid_time_format(ending_time):
+            if validations.is_valid_time_format(ending_time):
                 break
             else:
                 print('Not a valid time format. Correct example: 20:00')
@@ -415,7 +403,7 @@ def change_projection_data():
                 elif categorie.lower() == 'starting time':
                     while True:
                         new_starting_time = input('Enter the new starting time for this projection(format HH:MM): ')
-                        if is_valid_time_format(new_starting_time):
+                        if validations.is_valid_time_format(new_starting_time):
                             projection['starting time'] = new_starting_time
                             write_projections()
                             projection_found = True
@@ -425,7 +413,7 @@ def change_projection_data():
                 elif categorie.lower() == 'ending time':
                     while True:
                         new_ending_time = input('Enter the new ending time for this projection(format HH:MM): ')
-                        if is_valid_time_format(new_ending_time):
+                        if validations.is_valid_time_format(new_ending_time):
                             projection['ending time'] = new_ending_time
                             projection_found = True
                             break
@@ -635,7 +623,7 @@ def filter_projection(choice):
         clear_screen1()
         while True:
             date_input = input(f'Write the date you are interested in: ')
-            if is_valid_date_format(date_input):
+            if validations.is_valid_date_format(date_input):
                 check_date_apointment(date_input)
                 break
             else:
@@ -646,7 +634,7 @@ def filter_projection(choice):
         if choice == '4':
             while True:
                 user_input = input(f'Write the {value} you are interested in: ')
-                if is_valid_time_format(user_input):
+                if validations.is_valid_time_format(user_input):
                     break
                 else:
                     print('Not a valid time format. Correct example: 20:00')
@@ -654,7 +642,7 @@ def filter_projection(choice):
         if choice == '5':
             while True:
                 user_input = input(f'Write the {value} you are interested in: ')
-                if is_valid_time_format(user_input):
+                if validations.is_valid_time_format(user_input):
                     break
                 else:
                     print('Not a valid time format. Correct example: 20:00')

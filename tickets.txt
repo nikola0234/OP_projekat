@@ -11,6 +11,7 @@ nikola90|3333BN|a10|22.01.2024|sold
 nikola1|9999AN|a5|22.01.2024|sold
 milan96|1122BM|b1|22.01.2024|sold
 nikola1|1111BN|a2|24.01.2024|sold
+Nikola Bjelica|1122BM|h3|25.01.2024|sold
 nikola90|1122BM|c2|22.01.2024|canceled
 nikola1|1122BM|a3|22.01.2024|canceled
 nikola1|9999AN|b7|22.01.2024|canceled
