@@ -253,7 +253,8 @@ def employee_menu(logged_in):
         print('9. Sell the ticket directly')
         print('10. Sell reserved ticket')
         print('11. Search for tickets')
-        print('12. Quit the app')
+        print('12. Change the ticket data')
+        print('13. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -288,6 +289,9 @@ def employee_menu(logged_in):
             clear_screen()
             ticket_functions.search_for_ticket(user)
         elif choice == '12':
+            clear_screen()
+            ticket_functions.changing_tickets()
+        elif choice == '13':
             clear_screen()
             return
         else:

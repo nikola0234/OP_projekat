@@ -685,7 +685,7 @@ def filter_tickets(choice):
             data_input = input(f'Write the ticket status you are interested in(reserved/sold)(x to go back): ')
             if validations.reserved_sold(data_input):
                 break
-            elif data_input.lower() -- 'x':
+            elif data_input.lower() == 'x':
                 break
             else:
                 print('Not a valid ticket status. Possible input is reserved or sold.')
@@ -821,3 +821,151 @@ def search_for_ticket(user):
             filter_tickets(choice)
         else:
             print('Not existing choice. Try again')
+
+
+def change_ticket_data(ticket, changed, existing_tickets):
+    while not changed:
+        print('Enter the what do you want to change about a ticket: \n')
+        print('1. Change the projection appointment')
+        print('2. Change Name/Surname or username')
+        print('3. Change the seat for ticket')
+        print('4. Go back')
+        choice = input('Enter your choice: ')
+
+        if choice == '1':
+            while True:
+                new_appointment = input('Enter the code of new appointment: ')
+                if new_appointment not in existing_tickets:
+                    print('Entered code is not among existing ones. Try again')
+                else:
+                    break
+            for i in seats_for_appointment:
+                if new_appointment in i['code']:
+                    seats = i['seats'].split(',')
+            while True:
+                chosen_seat = ticket['seat']
+                if chosen_seat not in seats:
+                    print('The seat for this ticket is unfotrunally filled in new appointment. Try again')
+                    break
+                else:
+                    for app in seats_for_appointment:
+                        if app['code'] == ticket['appointment']:
+                            col, row = chosen_seat[0], chosen_seat[1:]
+
+                            col_index = ord(col) - ord('a')
+                            row_index = int(row)
+
+                            for appointment in apointments:
+                                if app['code'] == appointment['code']:
+                                    hall_name = appointment['hall']
+
+                            for hall in halls:
+                                if hall['name'] == hall_name:
+                                    seats_per_row = hall['columns']
+
+                            position = col_index * int(seats_per_row) + row_index - 1
+
+                            seats = app['seats']
+                            list_of_seats = seats.split(',')
+                            print(list_of_seats)
+                            list_of_seats[position] = chosen_seat
+
+                            joined_seats = ','.join(list_of_seats)
+                            print(joined_seats)
+                            app['seats'] = joined_seats
+
+                            write_seats_for_appointment()
+                    ticket['appointment'] = new_appointment
+                    write_tickets()
+                    for app in seats_for_appointment:
+                        if app['code'] == new_appointment:
+                            seats = app['seats']
+                    splited_seats = seats.split(',')
+                    for i, seat in enumerate(splited_seats):
+                        if seat == chosen_seat:
+                            splited_seats[i] = 'X'
+
+                    result_seats = ','.join(splited_seats)
+                    print(result_seats)
+                    for i in seats_for_appointment:
+                        if new_appointment in i['code']:
+                            i['seats'] = result_seats
+                    write_seats_for_appointment()
+
+                changed = True
+                input('Succesefully changed the ticket. Enter to continue...')
+                break
+
+
+def changing_tickets():
+    changed = False
+    existing_tickets = []
+    existing_names = []
+    existing_seats = []
+    for reserved in tickets_reserved:
+        existing_tickets.append(reserved['appointment'])
+        existing_names.append(reserved['name'])
+        existing_seats.append(reserved['seat'])
+
+    for sold in tickets_sold:
+        existing_tickets.append(sold['appointment'])
+        existing_names.append(sold['name'])
+        existing_seats.append(sold['seat'])
+
+    for app in apointments:
+        existing_tickets.append(app['code'])
+    while True:
+        print(existing_tickets)
+        print('These are tickets that you can cancel:')
+        print_reserved_tickets_employee(tickets_reserved, tickets_sold)
+        deleted = False
+        while True:
+            ticket_to_change = input('Enter the appointment code for reservation you want to change the data for(x to go back): ')
+
+            if ticket_to_change.lower() == 'x':
+                break
+            if ticket_to_change not in existing_tickets:
+                print('There is no reservation with that code, please try again.')
+            else:
+                break
+        if ticket_to_change.lower() == 'x':
+            break
+
+        while True:
+            name = input('Enter the Name/surname or username for ticket you want to change the data for(x to go back): ')
+
+            if name.lower() == 'x':
+                break
+            if name not in existing_names:
+                print('There is no ticket with that Name/Surname or username, please try again.')
+            else:
+                break
+        if name.lower() == 'x':
+            break
+
+        while True:
+            seat = input('Enter the seat for ticket you want to change the data for(x to go back): ')
+
+            if seat.lower() == 'x':
+                break
+            if seat not in existing_seats:
+                print('There is no ticket with that seat, please try again.')
+            else:
+                break
+        if seat.lower() == 'x':
+            break
+
+        while True:
+            for ticket in tickets_reserved:
+                if ticket['appointment'] == ticket_to_change and ticket['name'] == name and ticket['seat'] == seat:
+                    change_ticket_data(ticket, changed, existing_tickets)
+            if changed:
+                break
+            for ticket in tickets_sold:
+                if ticket['appointment'] == ticket_to_change and ticket['name'] == name and ticket['seat'] == seat:
+                    change_ticket_data(ticket, changed, existing_tickets)
+            if changed:
+                break
+            else:
+                print('Entered data not among tickets. Try again.')
+                break
