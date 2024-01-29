@@ -1046,3 +1046,32 @@ def changing_tickets():
             else:
                 print('Entered data not among tickets. Try again.')
                 break
+
+
+def cancel_reservations_half_hour_before_appointment():
+    tickets_existed = []
+    tickets_and_data = []
+    for ticket_r in tickets_reserved:
+        tickets_existed.append(ticket_r)
+    for ticket_s in tickets_sold:
+        tickets_existed.append(ticket_s)
+    for ticket in tickets_existed:
+        for app in apointments:
+            for proj in projections:
+                if ticket['appointment'] == app['code']:
+                    if ticket['appointment'][:4] == proj['code']:
+                        new_ticket = {
+                            'ticket': ticket['appointment'],
+                            'date': app['date'],
+                            'starting time': proj['starting time']
+                        }
+                        tickets_and_data.append(new_ticket)
+    while True:
+        print(tickets_and_data)
+        choice = input('Do you want to cancel all the reservations that are half hour before projection(yes/no): ')
+        if choice.lower() == 'no':
+            break
+        elif choice.lower() == 'yes':
+            for ticket in tickets_existed:
+                pass
+

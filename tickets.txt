@@ -2,3 +2,9 @@ nikola1|1111AK|a2|26.01.2024|reserved
 nikola1|3333CN|a10|26.01.2024|reserved
 nikola1|3333AM|a7|29.01.2024|reserved
 nikola2|1122AL|a4|29.01.2024|reserved
+nikola4|9999AL|a8|29.01.2024|reserved
+nikola4|1122BM|c8|29.01.2024|reserved
+nikola33|3333AN|a10|29.01.2024|canceled
+nikola33|3333AM|b8|29.01.2024|reserved
+uros123|4444AL|b8|29.01.2024|reserved
+uros123|3333AK|h8|29.01.2024|reserved

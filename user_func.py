@@ -254,7 +254,8 @@ def employee_menu(logged_in):
         print('10. Sell reserved ticket')
         print('11. Search for tickets')
         print('12. Change the ticket data')
-        print('13. Quit the app')
+        print('13. Cancel the tickets half hour before projection')
+        print('14. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -292,6 +293,9 @@ def employee_menu(logged_in):
             clear_screen()
             ticket_functions.changing_tickets()
         elif choice == '13':
+            clear_screen()
+            ticket_functions.cancel_reservations_half_hour_before_appointment()
+        elif choice == '14':
             clear_screen()
             return
         else:
