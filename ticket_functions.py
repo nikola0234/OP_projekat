@@ -833,7 +833,22 @@ def change_ticket_data(ticket, changed, existing_tickets):
         choice = input('Enter your choice: ')
 
         if choice == '1':
+            codes_for_app = []
+            projections_for_ticket = []
+            appointments_for_ticket = []
+            for app in existing_tickets:
+                if ticket['appointment'][:4] == app[:3]:
+                    codes_for_app.append(app)
+            for proj in projections:
+                if ticket['appointment'][:4] == proj['code']:
+                    projections_for_ticket.append(proj)
+            for app in apointments:
+                if ticket['appointment'][:4] == app['code'][:4]:
+                    appointments_for_ticket.append(app)
             while True:
+                print('Possible new appointments are: ')
+                print(movie_functions.print_table_projection(projections_for_ticket, appointments_for_ticket))
+
                 new_appointment = input('Enter the code of new appointment: ')
                 if new_appointment not in existing_tickets:
                     print('Entered code is not among existing ones. Try again')
@@ -842,6 +857,7 @@ def change_ticket_data(ticket, changed, existing_tickets):
             for i in seats_for_appointment:
                 if new_appointment in i['code']:
                     seats = i['seats'].split(',')
+
             while True:
                 chosen_seat = ticket['seat']
                 if chosen_seat not in seats:
@@ -863,38 +879,101 @@ def change_ticket_data(ticket, changed, existing_tickets):
                                 if hall['name'] == hall_name:
                                     seats_per_row = hall['columns']
 
+                                    position = col_index * int(seats_per_row) + row_index - 1
+
+                                    seats = app['seats']
+                                    list_of_seats = seats.split(',')
+                                    list_of_seats[position] = chosen_seat
+
+                                    joined_seats = ','.join(list_of_seats)
+                                    app['seats'] = joined_seats
+
+                                    write_seats_for_appointment()
+                                    ticket['appointment'] = new_appointment
+                            write_tickets()
+                            for app in seats_for_appointment:
+                                if app['code'] == new_appointment:
+                                    seats = app['seats']
+                            splited_seats = seats.split(',')
+                            for i, seat in enumerate(splited_seats):
+                                if seat == chosen_seat:
+                                    splited_seats[i] = 'X'
+
+                                result_seats = ','.join(splited_seats)
+                                for i in seats_for_appointment:
+                                    if new_appointment in i['code']:
+                                        i['seats'] = result_seats
+                    write_seats_for_appointment()
+                    changed = True
+                    input('Succesefully changed the ticket. Enter to continue...')
+                    break
+        elif choice == '2':
+            while True:
+                new_name = input('Enter the new username or name and surname: ')
+
+                if not validations.is_empty_string(new_name):
+                    print('Username, name and surname must contain at leat one character, try again ' )
+                else:
+                    input('Succesefully changed the username/Name and surname. Enter to continue')
+                    ticket['name'] = new_name
+                    write_tickets()
+                    break
+        elif choice == '3':
+            seat_to_rewrite = ticket['seat']
+            seats = None
+            for i in seats_for_appointment:
+                if ticket['appointment'] in i['code']:
+                    seats = i['seats'].split(',')
+            while True:
+                print_seats(ticket['appointment'])
+                print(seats)
+                chosen_seat = input('Choose one of best free seat for you: ')
+                if chosen_seat not in seats:
+                    print('You entered filled or not existing seat, please try again.')
+                elif chosen_seat == seat_to_rewrite:
+                    print('You entered the seat you are changing, please try again.')
+                else:
+                    break
+            for i, seat in enumerate(seats):
+                if seat == chosen_seat:
+                    seats[i] = 'X'
+            ticket['seat'] = chosen_seat
+            result_seats = ','.join(seats)
+            for i in seats_for_appointment:
+                if ticket['appointment'] in i['code']:
+                    i['seats'] = result_seats
+            write_seats_for_appointment()
+
+            for app in seats_for_appointment:
+                if app['code'] == ticket['appointment']:
+                    col, row = seat_to_rewrite[0], seat_to_rewrite[1:]
+
+                    col_index = ord(col) - ord('a')
+                    row_index = int(row)
+
+                    for appointment in apointments:
+                        if app['code'] == appointment['code']:
+                            hall_name = appointment['hall']
+
+                    for hall in halls:
+                        if hall['name'] == hall_name:
+                            seats_per_row = hall['columns']
+
                             position = col_index * int(seats_per_row) + row_index - 1
 
                             seats = app['seats']
                             list_of_seats = seats.split(',')
-                            print(list_of_seats)
-                            list_of_seats[position] = chosen_seat
+                            list_of_seats[position] = seat_to_rewrite
 
                             joined_seats = ','.join(list_of_seats)
-                            print(joined_seats)
                             app['seats'] = joined_seats
 
                             write_seats_for_appointment()
-                    ticket['appointment'] = new_appointment
                     write_tickets()
-                    for app in seats_for_appointment:
-                        if app['code'] == new_appointment:
-                            seats = app['seats']
-                    splited_seats = seats.split(',')
-                    for i, seat in enumerate(splited_seats):
-                        if seat == chosen_seat:
-                            splited_seats[i] = 'X'
-
-                    result_seats = ','.join(splited_seats)
-                    print(result_seats)
-                    for i in seats_for_appointment:
-                        if new_appointment in i['code']:
-                            i['seats'] = result_seats
-                    write_seats_for_appointment()
-
-                changed = True
-                input('Succesefully changed the ticket. Enter to continue...')
-                break
+                    input('Succesefully changed the ticket. Enter to continue...')
+                    break
+        elif choice == '4':
+            break
 
 
 def changing_tickets():
@@ -903,16 +982,14 @@ def changing_tickets():
     existing_names = []
     existing_seats = []
     for reserved in tickets_reserved:
-        existing_tickets.append(reserved['appointment'])
         existing_names.append(reserved['name'])
         existing_seats.append(reserved['seat'])
 
     for sold in tickets_sold:
-        existing_tickets.append(sold['appointment'])
         existing_names.append(sold['name'])
         existing_seats.append(sold['seat'])
 
-    for app in apointments:
+    for app in seats_for_appointment:
         existing_tickets.append(app['code'])
     while True:
         print(existing_tickets)
