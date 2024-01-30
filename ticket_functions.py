@@ -1073,5 +1073,51 @@ def cancel_reservations_half_hour_before_appointment():
             break
         elif choice.lower() == 'yes':
             for ticket in tickets_existed:
-                pass
+                for ticket1 in tickets_and_data:
+                    if datetime.datetime.now().strftime("%d.%m.%Y") == ticket1['date'] and ticket['status'] != 'sold\n':
+                        print('jeste')
+                        current_time = datetime.datetime.now().time()
+                        print(current_time)
+                        ticket_time = datetime.datetime.strptime(ticket1['starting time'], "%H:%M").time()
+                        print(ticket_time)
+                        time_difference = (datetime.datetime.combine(datetime.datetime.today(), ticket_time) -
+                                           datetime.datetime.combine(datetime.datetime.today(), current_time)).total_seconds() / 60
 
+                        if 0 <= time_difference <= 30:
+                            ticket['status'] = 'canceled\n'
+                            write_tickets()
+                            seat_to_rewrite = ticket['seat']
+                            hall_name = None
+                            for app in seats_for_appointment:
+                                if app['code'] == ticket['appointment']:
+                                    col, row = seat_to_rewrite[0], seat_to_rewrite[1:]
+
+                                    col_index = ord(col) - ord('a')
+                                    row_index = int(row)
+
+                                    for appointment in apointments:
+                                        if app['code'] == appointment['code']:
+                                            hall_name = appointment['hall']
+
+                                    for hall in halls:
+                                        if hall['name'] == hall_name:
+                                            seats_per_row = hall['columns']
+
+                                            position = col_index * int(seats_per_row) + row_index - 1
+
+                                            seats = app['seats']
+                                            list_of_seats = seats.split(',')
+                                            list_of_seats[position] = seat_to_rewrite
+
+                                            joined_seats = ','.join(list_of_seats)
+                                            app['seats'] = joined_seats
+
+                                            write_seats_for_appointment()
+                                    write_tickets()
+                            else:
+                                continue
+            input('Succesefully deleted all the reservations that are half hour or less from projection. Enter to go to menu...')
+            break
+
+        else:
+            print('Not existing choice, please try again.')
