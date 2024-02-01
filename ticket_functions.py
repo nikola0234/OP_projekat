@@ -628,10 +628,10 @@ def selling_reserved_tickets(user):
                             existing_reserved_tickets.remove(ticket['appointment'])
                             write_tickets()
                             sold = True
+                    if not sold:
+                        print('Entered seat is not among reserved tickets. Try again.')
                 if sold:
                     break
-                else:
-                    print('Entered seat is not among reserved tickets. Try again.')
 
         sold = False
         cont = input('Succesefully sold a ticket, press enter to sell more or press x to go back to menu: ')

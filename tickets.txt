@@ -1,4 +1,14 @@
+nikola1|8888AN|a5|01.02.2024|sold
+nikola1|8888AN|a4|01.02.2024|sold
+nikola1|8888AL|a1|01.02.2024|sold
+nikola1|8888AN|a8|01.02.2024|sold
+nikola1|8888AM|j7|01.02.2024|sold
+nikola1|8888AN|b1|01.02.2024|sold
+nikola1|1111EN|a2|01.02.2024|sold
+nikola1|1111BM|a5|01.02.2024|sold
+nikola1|3333CN|a5|01.02.2024|sold
 nikola1|8888AL|b6|30.01.2024|sold
+Nikola Bjelica|4444AM|f6|01.02.2024|sold
 nikola1|1111AK|a2|26.01.2024|canceled
 nikola1|3333CN|a10|26.01.2024|canceled
 nikola1|3333AM|a7|29.01.2024|canceled
