@@ -4,12 +4,16 @@ from movie_functions import projections
 from movie_functions import apointments
 import datetime
 import tabulate
+import user_func
 
+
+users = []
 tickets_reserved = []
 tickets_sold = []
 tickets_canceled = []
 seats_for_appointment = []
 halls = []
+loyalty_cards = []
 
 
 def read_tickets():
@@ -58,6 +62,48 @@ def write_tickets():
                 canceled['seat'] + '|' +
                 canceled['date_sold'] + '|' +
                 canceled['status']
+            )
+
+
+def find_price_for_ticket(ticket):
+    for projection in projections:
+        if projection['code'] in ticket['appointment']:
+            return float(projection['price'])
+
+
+def read_user_for_tickets():
+    with open('users1.txt', 'r') as fin:
+        for line in fin:
+            a = line.split('|')
+            useer_to_read = {
+                'username': a[0],
+                'password': a[1],
+                'name': a[2],
+                'surname': a[3],
+                'role': a[4]
+            }
+            users.append(useer_to_read)
+
+
+def read_loyalty_cards():
+    with open('loyalty_cards.txt', 'r') as fin:
+        for line in fin:
+            loyalty_data = line.split('|')
+            card = {
+                'username': loyalty_data[0],
+                'amount': loyalty_data[1],
+                'status': loyalty_data[2]
+            }
+            loyalty_cards.append(card)
+
+
+def write_loyalty_cards():
+    with open('loyalty_cards.txt', 'w') as fin:
+        for card in loyalty_cards:
+            fin.write(
+                card['username'] + '|' +
+                card['amount'] + '|' +
+                card['status']
             )
 
 
@@ -135,6 +181,23 @@ def generate_seats_for_appointment():
         for data in data_to_write:
             fout.write(data + '\n')
     print(seats_for_appointment)
+
+
+def print_loyalty_cards():
+    headers = ['#', 'Username', 'Money spent', 'Does user have loyalty card']
+    table_dat = []
+    num = 1
+    for card in loyalty_cards:
+        table_row = [
+            num,
+            card['username'],
+            card['amount'],
+            card['status']
+        ]
+        table_dat.append(table_row)
+        num += 1
+    table = tabulate.tabulate(table_dat, headers= headers, tablefmt= 'grid')
+    print(table)
 
 
 def print_reserved_tickets_user(user):
@@ -1075,11 +1138,8 @@ def cancel_reservations_half_hour_before_appointment():
             for ticket in tickets_existed:
                 for ticket1 in tickets_and_data:
                     if datetime.datetime.now().strftime("%d.%m.%Y") == ticket1['date'] and ticket['status'] != 'sold\n':
-                        print('jeste')
                         current_time = datetime.datetime.now().time()
-                        print(current_time)
                         ticket_time = datetime.datetime.strptime(ticket1['starting time'], "%H:%M").time()
-                        print(ticket_time)
                         time_difference = (datetime.datetime.combine(datetime.datetime.today(), ticket_time) -
                                            datetime.datetime.combine(datetime.datetime.today(), current_time)).total_seconds() / 60
 
@@ -1121,3 +1181,48 @@ def cancel_reservations_half_hour_before_appointment():
 
         else:
             print('Not existing choice, please try again.')
+
+
+def create_loyalty_cards():
+    read_user_for_tickets()
+    loyalty_cards_existing = []
+    for card in loyalty_cards:
+        loyalty_cards_existing.append(card['username'])
+    while True:
+        print('Current loyalty cards status: ')
+        print_loyalty_cards()
+        choice = input('Do you want to refresh loyalty cards data: ')
+        if choice.lower() == 'no':
+            break
+        elif choice.lower() == 'yes':
+            for user in users:
+                price_sum = 0.0
+                if user['role'] == 'registered_user\n':
+                    for ticket in tickets_sold :
+                        if ticket['name'] == user['username']:
+                            num = find_price_for_ticket(ticket)
+                            price_sum += num
+                    if user['username'] in loyalty_cards_existing:
+                        for card in loyalty_cards:
+                            if user['username'] == card['username']:
+                                card['amount'] = str(price_sum)
+                                if price_sum >= 50:
+                                    card['status'] = 'yes\n'
+                                else:
+                                    card['status'] = 'no\n'
+                    else:
+                        if price_sum >= 50:
+                            new_status = 'yes\n'
+                        else:
+                            new_status = 'no\n'
+                        new_card = {
+                            'username': user['username'],
+                            'amount': str(price_sum),
+                            'status': new_status
+                        }
+                        loyalty_cards.append(new_card)
+            write_loyalty_cards()
+            input('Sucessefully refreshed data for loyalty cards. Enter to continue')
+            break
+        else:
+            print('Not existing choice.')

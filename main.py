@@ -1,7 +1,6 @@
 import user_func
 import movie_functions
 import ticket_functions
-import validations
 
 
 def main():
@@ -61,9 +60,10 @@ if __name__ == '__main__':
     movie_functions.read_cinema_hall()
     movie_functions.generate_appointments_from_projections()
     movie_functions.read_appointment()
+    movie_functions.delete_appointments_after_date_pass()
     ticket_functions.read_tickets()
     ticket_functions.read_halls()
     ticket_functions.generate_seats_for_appointment()
     ticket_functions.read_seats_for_appointment()
-    movie_functions.delete_appointments_after_date_pass()
+    ticket_functions.read_loyalty_cards()
     main()
