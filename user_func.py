@@ -286,7 +286,7 @@ def employee_menu(logged_in):
             ticket_functions.canceling_tickets_employee(user)
         elif choice == '9':
             clear_screen()
-            ticket_functions.direct_selling_tickets()
+            ticket_functions.direct_selling_tickets(user)
         elif choice == '10':
             clear_screen()
             ticket_functions.selling_reserved_tickets(user)

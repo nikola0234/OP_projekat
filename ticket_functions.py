@@ -4,7 +4,6 @@ from movie_functions import projections
 from movie_functions import apointments
 import datetime
 import tabulate
-import user_func
 
 
 users = []
@@ -14,6 +13,8 @@ tickets_canceled = []
 seats_for_appointment = []
 halls = []
 loyalty_cards = []
+sold_ticket_info = []
+appointment_info = []
 
 
 def read_tickets():
@@ -71,6 +72,18 @@ def find_price_for_ticket(ticket):
             return float(projection['price'])
 
 
+def find_day_projection_ticket(ticket):
+    for appointment in apointments:
+        if appointment['code'] == ticket['appointment']:
+            date_str = appointment['date']
+
+            date_obj = datetime.datetime.strptime(date_str, '%d.%m.%Y')
+
+            day_in_week = date_obj.strftime('%A').lower()
+
+            return(day_in_week)
+
+
 def read_user_for_tickets():
     with open('users1.txt', 'r') as fin:
         for line in fin:
@@ -104,6 +117,35 @@ def write_loyalty_cards():
                 card['username'] + '|' +
                 card['amount'] + '|' +
                 card['status']
+            )
+
+
+def read_sold_tickets_info():
+    with open('sold_ticket_info.txt', 'r') as fin:
+        for line in fin:
+            ticket_data = line.split('|')
+            sold_ticket = {
+                'employee': ticket_data[0],
+                'appointment': ticket_data[1],
+                'seat': ticket_data[2],
+                'date_sold': ticket_data[3],
+                'status': 'sold',
+                'price': ticket_data[4],
+                'date_of_appointment': ticket_data[5]
+            }
+
+
+def write_sold_tickets_info():
+    with open('sold_ticket_info.txt', 'w') as fin:
+        for ticket in sold_ticket_info:
+            fin.write(
+                ticket['employee'] + '|' +
+                ticket['appointment'] + '|' +
+                ticket['seat'] + '|' +
+                ticket['date_sold'] + '|' +
+                ticket['status'] + '|' +
+                ticket['price'] + '|' +
+                ticket['day_of_appointment']
             )
 
 
@@ -585,7 +627,7 @@ def canceling_tickets_employee(user):
             break
 
 
-def direct_selling_tickets():
+def direct_selling_tickets(user):
     existing_app_codes = []
     seats = None
     for code in apointments:
@@ -644,7 +686,21 @@ def direct_selling_tickets():
             'status': 'sold\n'
         }
 
+        price_sold = find_price_for_ticket(new_ticket)
+        day_of_appointment = find_day_projection_ticket(new_ticket)
+        sold_ticket = {
+            'employee': user['username'],
+            'appointment': ticket_code,
+            'seat': chosen_seat,
+            'date_sold': datetime.datetime.now().strftime('%d.%m.%Y'),
+            'status': 'sold',
+            'price': str(price_sold),
+            'day_of_appointment': day_of_appointment + '\n'
+        }
+
+        sold_ticket_info.append(sold_ticket)
         tickets_sold.append(new_ticket)
+        write_sold_tickets_info()
         write_tickets()
         cont = input('Succesefully sold a ticket, press enter to sell more or press x to go back to menu: ')
         if cont.lower() == 'x':
@@ -680,6 +736,20 @@ def selling_reserved_tickets(user):
                 if ticket['appointment'] == ticket_code and existing_reserved_tickets.count(ticket['appointment']) < 2 and not sold:
                     ticket['status'] = 'sold\n'
                     ticket['date_sold'] = formatted_date
+                    price_sold = find_price_for_ticket(ticket)
+                    day_of_appointment = find_day_projection_ticket(ticket)
+                    sold_ticket = {
+                        'employee': user['username'],
+                        'appointment': ticket['appointment'],
+                        'seat': ticket['seat'],
+                        'date_sold': formatted_date,
+                        'status': 'sold',
+                        'price': str(price_sold),
+                        'day_of_appointment': day_of_appointment + '\n'
+                    }
+
+                    sold_ticket_info.append(sold_ticket)
+                    write_sold_tickets_info()
                     write_tickets()
                     sold = True
                 elif ticket['appointment'] == ticket_code and existing_reserved_tickets.count(ticket['appointment']) >= 2 and not sold:
