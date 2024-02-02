@@ -1191,8 +1191,10 @@ def create_loyalty_cards():
     while True:
         print('Current loyalty cards status: ')
         print_loyalty_cards()
-        choice = input('Do you want to refresh loyalty cards data: ')
+        choice = input('Do you want to refresh loyalty cards data(yes/no or x to go back): ')
         if choice.lower() == 'no':
+            break
+        elif choice.lower() == 'x':
             break
         elif choice.lower() == 'yes':
             for user in users:
@@ -1223,6 +1225,5 @@ def create_loyalty_cards():
                         loyalty_cards.append(new_card)
             write_loyalty_cards()
             input('Sucessefully refreshed data for loyalty cards. Enter to continue')
-            break
         else:
             print('Not existing choice.')
