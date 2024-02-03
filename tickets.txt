@@ -1,3 +1,9 @@
+nikola1|8888AN|a2|03.02.2024|reserved
+nikola1|1122AN|c7|03.02.2024|reserved
+nikola1|1122AN|a7|03.02.2024|reserved
+nikola1|9999AN|a8|03.02.2024|reserved
+nikola1|1122AN|a8|03.02.2024|reserved
+nikola1|1122AN|c6|03.02.2024|reserved
 niko4|8888AL|a5|02.02.2024|sold
 niko4|8888AN|a7|02.02.2024|sold
 niko4|8888AN|c4|01.02.2024|sold

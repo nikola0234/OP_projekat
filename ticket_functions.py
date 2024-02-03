@@ -507,6 +507,13 @@ def reserving_tickets(user):
             }
         tickets_reserved.append(new_ticket)
         write_tickets()
+        for card in loyalty_cards:
+            if card['username'] == user['username']:
+                if card['status'] == 'yes\n':
+                    print('You are the loyalty card owner, when you buy the ticket you will get 10% discount!')
+            elif card['username'] == name_surname:
+                if card['status'] == 'yes\n':
+                    print('This user is the loyalty card owner, when he/she buy the ticket he/she will get 10% discount!')
         cont = input('Succesefully reserved a ticket, press enter to reserve more or press x to go back to menu: ')
         if cont.lower() == 'x':
             break
