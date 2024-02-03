@@ -27,3 +27,8 @@ def reserved_sold(input_str):
         return True
     else:
         return False
+
+
+def is_valid_day_of_week(day_str):
+    valid_days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    return day_str.lower() in valid_days

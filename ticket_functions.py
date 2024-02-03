@@ -66,10 +66,20 @@ def write_tickets():
             )
 
 
+def find_price_for_projection(ticket):
+    for projection in projections:
+        if projection['code'] in ticket['appointment']:
+            return projection['price']
+
+
 def find_price_for_ticket(ticket):
     for projection in projections:
         if projection['code'] in ticket['appointment']:
-            return float(projection['price'])
+            try:
+                return float(projection['price'])
+            except ValueError:
+                return 0.0
+    return 0.0
 
 
 def find_day_projection_ticket(ticket):
@@ -81,7 +91,28 @@ def find_day_projection_ticket(ticket):
 
             day_in_week = date_obj.strftime('%A').lower()
 
-            return(day_in_week)
+            return day_in_week
+
+
+def find_day_appointment(appointment):
+    date_str = appointment['date']
+
+    date_obj = datetime.datetime.strptime(date_str, '%d.%m.%Y')
+
+    day_in_week = date_obj.strftime('%A').lower()
+
+    return day_in_week
+
+
+def is_date_within_last_year(date_str):
+    try:
+        date_obj = datetime.datetime.strptime(date_str, '%d.%m.%Y')
+
+        last_year_date = datetime.datetime.now() - datetime.timedelta(days=365)
+
+        return date_obj >= last_year_date
+    except ValueError:
+        return False
 
 
 def read_user_for_tickets():
@@ -129,10 +160,11 @@ def read_sold_tickets_info():
                 'appointment': ticket_data[1],
                 'seat': ticket_data[2],
                 'date_sold': ticket_data[3],
-                'status': 'sold',
-                'price': ticket_data[4],
-                'date_of_appointment': ticket_data[5]
+                'date_of_appointment': ticket_data[4],
+                'price': ticket_data[5],
+                'day_of_appointment': ticket_data[6]
             }
+            sold_ticket_info.append(sold_ticket)
 
 
 def write_sold_tickets_info():
@@ -143,9 +175,45 @@ def write_sold_tickets_info():
                 ticket['appointment'] + '|' +
                 ticket['seat'] + '|' +
                 ticket['date_sold'] + '|' +
-                ticket['status'] + '|' +
+                ticket['date_of_appointment'] + '|' +
                 ticket['price'] + '|' +
                 ticket['day_of_appointment']
+            )
+
+
+def read_appointment_info():
+    existing_appointments = []
+    with open('appointment_info.txt', 'r') as fin:
+        for line in fin:
+            appointment = line.split('|')
+            app = {
+                'code': appointment[0],
+                'changing_price': appointment[1],
+                'day_of_appointment': appointment[2]
+            }
+            appointment_info.append(app)
+            existing_appointments.append(app['code'])
+    for app in appointment_info:
+        existing_appointments.append(app['code'])
+    print(existing_appointments)
+    for appointment in apointments:
+        if appointment['status'] == 'active\n' and appointment['code'] not in existing_appointments:
+            new_app = {
+                'code': appointment['code'],
+                'changing_price': '0',
+                'day_of_appointment': find_day_appointment(appointment) + '\n'
+            }
+
+            appointment_info.append(new_app)
+
+
+def write_appointment_info():
+    with open('appointment_info.txt', 'w') as fin:
+        for data in appointment_info:
+            fin.write(
+                data['code'] + '|' +
+                data['changing_price'] + '|' +
+                data['day_of_appointment']
             )
 
 
@@ -223,6 +291,23 @@ def generate_seats_for_appointment():
         for data in data_to_write:
             fout.write(data + '\n')
     print(seats_for_appointment)
+
+
+def print_appointment_info():
+    headers = ['#', 'Appointment', 'Is price changed(- discount, + markup,0 no changed)', 'Day of appointment']
+    table_data = []
+    num = 1
+    for appointment in appointment_info:
+        table_row = [
+            num,
+            appointment['code'],
+            appointment['changing_price'],
+            appointment['day_of_appointment']
+        ]
+        table_data.append(table_row)
+        num += 1
+    table = tabulate.tabulate(table_data, headers=headers, tablefmt='grid')
+    print(table)
 
 
 def print_loyalty_cards():
@@ -348,6 +433,8 @@ def reserving_tickets(user):
             existing_app_codes.append(code['code'])
     if not user:
         while True:
+            print(sold_ticket_info)
+            print(projections)
             name_surname = input('You are not registered, please enter name and surname for your ticket reservation: ')
             if not name_surname:
                 print('Name or surname must include at least one character. Please try again.')
@@ -454,7 +541,6 @@ def canceling_reservation(user):
         if code['name'] == user['username']:
             existing_tickets.append(code['appointment'])
     while True:
-        print(existing_tickets)
         print('These are your current reserved tickets:')
         print_reserved_tickets_user(user)
         deleted = False
@@ -539,7 +625,7 @@ def canceling_tickets_employee(user):
         existing_tickets.append(sold['appointment'])
 
     while True:
-        print(existing_tickets)
+        print(sold_ticket_info)
         print('These are tickets that you can cancel:')
         print_reserved_tickets_employee(tickets_reserved, tickets_sold)
         deleted = False
@@ -686,15 +772,16 @@ def direct_selling_tickets(user):
             'status': 'sold\n'
         }
 
-        price_sold = find_price_for_ticket(new_ticket)
+        price_sold = find_price_for_projection(new_ticket)
         day_of_appointment = find_day_projection_ticket(new_ticket)
+        date_of_appointment = search_for_date_of_appointment(ticket_code)
         sold_ticket = {
             'employee': user['username'],
             'appointment': ticket_code,
             'seat': chosen_seat,
             'date_sold': datetime.datetime.now().strftime('%d.%m.%Y'),
-            'status': 'sold',
-            'price': str(price_sold),
+            'date_of_appointment': date_of_appointment,
+            'price': price_sold,
             'day_of_appointment': day_of_appointment + '\n'
         }
 
@@ -736,15 +823,16 @@ def selling_reserved_tickets(user):
                 if ticket['appointment'] == ticket_code and existing_reserved_tickets.count(ticket['appointment']) < 2 and not sold:
                     ticket['status'] = 'sold\n'
                     ticket['date_sold'] = formatted_date
-                    price_sold = find_price_for_ticket(ticket)
+                    price_sold = find_price_for_projection(ticket)
                     day_of_appointment = find_day_projection_ticket(ticket)
+                    date_of_appointment = search_for_date_of_appointment(ticket['appointment'])
                     sold_ticket = {
                         'employee': user['username'],
                         'appointment': ticket['appointment'],
                         'seat': ticket['seat'],
                         'date_sold': formatted_date,
-                        'status': 'sold',
-                        'price': str(price_sold),
+                        'date_of_appointment': date_of_appointment,
+                        'price': price_sold,
                         'day_of_appointment': day_of_appointment + '\n'
                     }
 
@@ -1270,8 +1358,8 @@ def create_loyalty_cards():
             for user in users:
                 price_sum = 0.0
                 if user['role'] == 'registered_user\n':
-                    for ticket in tickets_sold :
-                        if ticket['name'] == user['username']:
+                    for ticket in tickets_sold:
+                        if ticket['name'] == user['username'] and is_date_within_last_year(ticket['date_sold']):
                             num = find_price_for_ticket(ticket)
                             price_sum += num
                     if user['username'] in loyalty_cards_existing:
@@ -1295,5 +1383,30 @@ def create_loyalty_cards():
                         loyalty_cards.append(new_card)
             write_loyalty_cards()
             input('Sucessefully refreshed data for loyalty cards. Enter to continue')
+        else:
+            print('Not existing choice.')
+
+
+def change_ticket_prices():
+    while True:
+        print('Current changed prices of appointments: ')
+        print_appointment_info()
+        choice = input('\nDo you want to change prices, appointments on tuesday will be cheaper for 50 cents'
+                       'and appointments on weekends will be 50 cents more expensive(yes/no or x to go back): ')
+
+        if choice.lower() == 'no':
+            break
+        if choice.lower() == 'x':
+            break
+        elif choice.lower() == 'yes':
+            for appointment in appointment_info:
+                if appointment['day_of_appointment'] == 'tuesday\n':
+                    appointment['changing_price'] = '-'
+                if appointment['day_of_appointment'] == 'saturday\n' or appointment['day_of_appointment'] == 'sunday\n':
+                    appointment['changing_price'] = '+'
+
+            write_appointment_info()
+            input('Succesefully changed prices. Enter to continue...')
+            break
         else:
             print('Not existing choice.')

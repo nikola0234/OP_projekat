@@ -1,5 +1,5 @@
-nikola1|88.8|yes
-niko4|36.0|no
+nikola1|198.2|yes
+niko4|54.0|yes
 nikola4|0.0|no
 nikola33|0.0|no
 milan96|0.0|no
