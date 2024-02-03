@@ -514,6 +514,12 @@ def reserving_tickets(user):
             elif card['username'] == name_surname:
                 if card['status'] == 'yes\n':
                     print('This user is the loyalty card owner, when he/she buy the ticket he/she will get 10% discount!')
+        for appointment in appointment_info:
+            if new_ticket['appointment'] == appointment['code']:
+                if appointment['changing_price'] == '-' and user['role'] != 'employee\n':
+                    print('The appointment you choose is on tuesday and you will get 50 cents discount!')
+                elif appointment['changing_price'] == '-' and user['role'] == 'employee\n':
+                    print('The appointment user choose is on tuesday and he/she will get 50 cents discount!')
         cont = input('Succesefully reserved a ticket, press enter to reserve more or press x to go back to menu: ')
         if cont.lower() == 'x':
             break
@@ -780,6 +786,18 @@ def direct_selling_tickets(user):
         }
 
         price_sold = find_price_for_projection(new_ticket)
+        price_sold = float(price_sold)
+        for appointment in appointment_info:
+            if appointment['code'] == ticket_code:
+                if appointment['changing_price'] == '-':
+                    price_sold -= 0.5
+                elif appointment['changing_price'] == '+':
+                    price_sold += 0.5
+        for card in loyalty_cards:
+            if card['username'] == name_surname:
+                if card['status'] == 'yes\n':
+                    price_sold *= 0.9
+        price_sold = str(price_sold)
         day_of_appointment = find_day_projection_ticket(new_ticket)
         date_of_appointment = search_for_date_of_appointment(ticket_code)
         sold_ticket = {
@@ -831,6 +849,18 @@ def selling_reserved_tickets(user):
                     ticket['status'] = 'sold\n'
                     ticket['date_sold'] = formatted_date
                     price_sold = find_price_for_projection(ticket)
+                    price_sold = float(price_sold)
+                    for appointment in appointment_info:
+                        if appointment['code'] == ticket_code:
+                            if appointment['changing_price'] == '-':
+                                price_sold -= 0.5
+                            elif appointment['changing_price'] == '+':
+                                price_sold += 0.5
+                    for card in loyalty_cards:
+                        if card['username'] == ticket['name']:
+                            if card['status'] == 'yes\n':
+                                price_sold *= 0.9
+                    price_sold = str(price_sold)
                     day_of_appointment = find_day_projection_ticket(ticket)
                     date_of_appointment = search_for_date_of_appointment(ticket['appointment'])
                     sold_ticket = {
@@ -853,6 +883,33 @@ def selling_reserved_tickets(user):
                         if ticket1['appointment'] == ticket_code and ticket1['seat'] == seat_to_sell:
                             ticket1['status'] = 'sold\n'
                             ticket1['date_sold'] = formatted_date
+                            price_sold = find_price_for_projection(ticket1)
+                            price_sold = float(price_sold)
+                            for appointment in appointment_info:
+                                if appointment['code'] == ticket_code:
+                                    if appointment['changing_price'] == '-':
+                                        price_sold -= 0.5
+                                    elif appointment['changing_price'] == '+':
+                                        price_sold += 0.5
+                            for card in loyalty_cards:
+                                if card['username'] == ticket1['name']:
+                                    if card['status'] == 'yes\n':
+                                        price_sold *= 0.9
+                            price_sold = str(price_sold)
+                            day_of_appointment = find_day_projection_ticket(ticket1)
+                            date_of_appointment = search_for_date_of_appointment(ticket1['appointment'])
+                            sold_ticket = {
+                                'employee': user['username'],
+                                'appointment': ticket1['appointment'],
+                                'seat': ticket1['seat'],
+                                'date_sold': formatted_date,
+                                'date_of_appointment': date_of_appointment,
+                                'price': price_sold,
+                                'day_of_appointment': day_of_appointment + '\n'
+                            }
+
+                            sold_ticket_info.append(sold_ticket)
+                            write_sold_tickets_info()
                             existing_reserved_tickets.remove(ticket['appointment'])
                             write_tickets()
                             sold = True
