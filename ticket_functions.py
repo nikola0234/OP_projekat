@@ -195,7 +195,6 @@ def read_appointment_info():
             existing_appointments.append(app['code'])
     for app in appointment_info:
         existing_appointments.append(app['code'])
-    print(existing_appointments)
     for appointment in apointments:
         if appointment['status'] == 'active\n' and appointment['code'] not in existing_appointments:
             new_app = {
@@ -1211,7 +1210,6 @@ def change_ticket_data(ticket, changed, existing_tickets):
                     seats = i['seats'].split(',')
             while True:
                 print_seats(ticket['appointment'])
-                print(seats)
                 chosen_seat = input('Choose one of best free seat for you: ')
                 if chosen_seat not in seats:
                     print('You entered filled or not existing seat, please try again.')
@@ -1352,7 +1350,6 @@ def cancel_reservations_half_hour_before_appointment():
                         }
                         tickets_and_data.append(new_ticket)
     while True:
-        print(tickets_and_data)
         choice = input('Do you want to cancel all the reservations that are half hour before projection(yes/no): ')
         if choice.lower() == 'no':
             break
@@ -1471,6 +1468,5 @@ def change_ticket_prices():
 
             write_appointment_info()
             input('Succesefully changed prices. Enter to continue...')
-            break
         else:
             print('Not existing choice.')

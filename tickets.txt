@@ -1,6 +1,7 @@
 nikola1|9999AN|a8|03.02.2024|reserved
 nikola1|1122AN|a8|03.02.2024|reserved
 nikola1|1122AN|c6|03.02.2024|reserved
+nikola1|9999AG|h8|05.02.2024|reserved
 nikola1|1122AN|a7|03.02.2024|sold
 nikola1|8888AF|a2|03.02.2024|sold
 nikola1|1122AN|c7|03.02.2024|sold
@@ -41,7 +42,7 @@ nikola1|9999AN|a4|03.02.2024|sold
 Nikola|1122AN|a6|03.02.2024|sold
 nikola1|3333DN|b2|03.02.2024|sold
 nikola1|2222AN|a3|03.02.2024|sold
-nikola1|1122AN|a5|03.02.2024|sold
+nikola1|1122AL|a5|03.02.2024|sold
 nikola1|9999AN|b2|03.02.2024|sold
 nikola1|9999AN|a7|03.02.2024|sold
 nikola1|1122AN|c1|03.02.2024|sold

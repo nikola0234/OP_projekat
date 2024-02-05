@@ -4,7 +4,7 @@ manager2|manager2|manager2|aa|manager
 niko4|nikola999|aa|aa|registered_user
 manager4|manager4|aaa|aaa|manager
 nikola4|nikola4|aaa|aaa|registered_user
-nikola99|nikola99|Nikola|a|employee
+nikola99|nikola99|Nikola|Bjelica|employee
 manager5|manager5|aa|aa|manager
 manager6|manager6|aaa|aaa|manager
 manager7|manager7|aa|aa|manager

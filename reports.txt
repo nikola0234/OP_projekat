@@ -10,3 +10,4 @@ fight club|3|12.04
 03.02.2024|nikola99|6|36.79
 nikola99|9|62.019999999999996|milos1|0|0.0|sara42|0|0.0|sara53|0|0.0|milos2|0|0.0|employee5|0|0.0
 nikola99|9|62.019999999999996|milos1|0|0.0|sara42|2|7.74|sara53|0|0.0|milos2|0|0.0|employee5|0|0.0
+nikola99|9|62.019999999999996|milos1|0|0.0|sara42|2|7.74|sara53|0|0.0|milos2|0|0.0|employee5|0|0.0
