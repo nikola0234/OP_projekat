@@ -1,3 +1,9 @@
 niko4|8888AL|a5|02.02.2024|sold|niko4|8888AN|a7|02.02.2024|sold|nikola1|8888AM|a4|02.02.2024|sold|nikola90|9999AH|a2|02.02.2024|sold|nikola1|9999AA|g6|02.02.2024|sold
 nikola1|1122AN|a7|03.02.2024|sold|nikola1|1122AN|c7|03.02.2024|sold|nikola1|1122AN|a1|03.02.2024|sold|nikola1|1122AN|e8|03.02.2024|sold|Nikola Bjelica|1122AN|b1|03.02.2024|sold|nikola|1122AN|a3|03.02.2024|sold|nikola1|1122AN|a2|03.02.2024|sold|nikola1|1122AN|a4|03.02.2024|sold|Nikola|1122AN|a6|03.02.2024|sold|nikola1|1122AN|a5|03.02.2024|sold|nikola1|1122AN|c1|03.02.2024|sold|nikola1|1122AN|b8|03.02.2024|sold
 nikola1|3333BM|a2|05.02.2024|sold|nikola4|3333BM|a4|05.02.2024|sold
+nikola1|1122AN|a7|03.02.2024|sold|nikola1|1122AN|c7|03.02.2024|sold|nikola1|1122AN|a1|03.02.2024|sold|nikola1|1122AN|e8|03.02.2024|sold|Nikola Bjelica|1122AN|b1|03.02.2024|sold|nikola|1122AN|a3|03.02.2024|sold|nikola1|1122AN|a2|03.02.2024|sold|nikola1|1122AN|a4|03.02.2024|sold|Nikola|1122AN|a6|03.02.2024|sold|nikola1|1122AN|a5|03.02.2024|sold|nikola1|1122AN|c1|03.02.2024|sold|nikola1|1122AN|b8|03.02.2024|sold
+saturday|6|36.79
+monday|2|16.529999999999998
+wednesday|3|24.75
+the matrix|3|25.229999999999997
+fight club|3|12.04

@@ -68,4 +68,5 @@ if __name__ == '__main__':
     ticket_functions.read_loyalty_cards()
     ticket_functions.read_sold_tickets_info()
     ticket_functions.read_appointment_info()
+    ticket_functions.read_user_for_tickets()
     main()
