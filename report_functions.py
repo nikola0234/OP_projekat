@@ -335,6 +335,114 @@ def report_num6():
         break
 
 
+def report_num7():
+    table_data = []
+    data_to_save = []
+    employees = []
+    for user in users:
+        if user['role'] == 'employee\n':
+            employees.append(user['username'])
+    headers = ['Number of sold tickets', 'Total price of sold tickets']
+    while True:
+        while True:
+            print(employees)
+            employee = input('Enter the employee you want to get report for(x to go back): ')
+
+            if employee not in employees:
+                print('Entered employee username not in existing employees.')
+            elif employee.lower() == 'x':
+                break
+            else:
+                break
+        if employee.lower() == 'x':
+            break
+        while True:
+            date_input = input('Enter the date of appointment you want to get report for(x to go back): ')
+            if validations.is_valid_date_format(date_input):
+                break
+            elif date_input.lower() == 'x':
+                break
+            else:
+                print('Not a valid date format. Correct example: 12.12.2024')
+        if date_input.lower() == 'x':
+            break
+
+        total_number = 0
+        total_price = 0.0
+
+        for ticket1 in sold_ticket_info:
+            if ticket1['date_sold'] == date_input and ticket1['employee'] == employee:
+                for ticket in tickets_sold:
+                    if ticket['seat'] == ticket1['seat'] and ticket['appointment'] == ticket1['appointment']:
+                        total_number += 1
+                        total_price += float(ticket1['price'])
+
+        table_data.append([str(total_number), str(total_price)])
+        data_to_save.append({
+            'date_sold': date_input,
+            'employee': employee,
+            'total_number': str(total_number),
+            'total_price': str(total_price)
+        })
+
+        print_table_reports(table_data, headers)
+        while True:
+            choice_to_save = input('Do you want to save this report(yes/no): ')
+            if choice_to_save == 'yes':
+                save_report(data_to_save)
+                input('Succesefully saved the report. Enter to go back...')
+                break
+            elif choice_to_save == 'no':
+                break
+            else:
+                print('Not existing choice.')
+        break
+
+
+def report_num8():
+    table_data = []
+    data_to_save = []
+    employees = []
+    for user in users:
+        if user['role'] == 'employee\n':
+            employees.append(user['username'])
+    headers = ['Employee', 'Number of sold tickets', 'Total price of sold tickets']
+
+    for employee in employees:
+        total_number = 0
+        total_price = 0.0
+        for ticket1 in sold_ticket_info:
+            if ticket1['employee'] == employee:
+                for ticket in tickets_sold:
+                    if ticket['seat'] == ticket1['seat'] and ticket['appointment'] == ticket1['appointment']:
+                        total_number += 1
+                        total_price += float(ticket1['price'])
+        table_row = [
+            employee,
+            str(total_number),
+            str(total_price),
+        ]
+        table_data.append(table_row)
+
+        data_to_save.append({
+            'employee': employee,
+            'total_number': str(total_number),
+            'total_price': str(total_price)
+        })
+
+    print_table_reports(table_data, headers)
+    while True:
+        choice_to_save = input('Do you want to save this report(yes/no): ')
+        if choice_to_save == 'yes':
+            save_report(data_to_save)
+            input('Succesefully saved the report. Enter to go back...')
+            break
+        elif choice_to_save == 'no':
+            break
+        else:
+            print('Not existing choice.')
+
+
 def manager_reports():
     while True:
         print('These are reports you can get: ')
@@ -368,4 +476,13 @@ def manager_reports():
         elif choice == '6':
             report_num6()
             break
-
+        elif choice == '7':
+            report_num7()
+            break
+        elif choice == '8':
+            report_num8()
+            break
+        elif choice == '9':
+            break
+        else:
+            print('Not existing choice.')

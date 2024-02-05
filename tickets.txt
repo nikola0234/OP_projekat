@@ -50,6 +50,8 @@ nikola1|1122AN|b8|03.02.2024|sold
 nikola1|3333BM|a2|05.02.2024|sold
 nikola4|3333BM|a4|05.02.2024|sold
 korisnik1|3333BM|a6|05.02.2024|sold
+niko4|1122AN|c2|05.02.2024|sold
+niko4|1122AN|b2|05.02.2024|sold
 nikola1|1111AK|a2|26.01.2024|canceled
 nikola1|3333CN|a10|26.01.2024|canceled
 nikola1|3333AM|a7|29.01.2024|canceled
