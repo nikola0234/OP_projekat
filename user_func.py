@@ -1,6 +1,8 @@
 # Ovaj fajl sadrzi funcije koje se koriste u radu sa korisnicima.
 import os
 import re
+
+import report_functions
 from main import main
 import movie_functions
 import ticket_functions
@@ -191,7 +193,8 @@ def manager_menu(logged_in):
         print('13. Change the projection data')
         print('14. Add loyalty cards')
         print('15. Change the ticket prices')
-        print('16. Quit the app')
+        print('16. Reports')
+        print('17. Quit the app')
         choice = input('Enter your choice: ')
         if choice == '1':
             logged_in = False
@@ -238,6 +241,9 @@ def manager_menu(logged_in):
             clear_screen()
             ticket_functions.change_ticket_prices()
         elif choice == '16':
+            clear_screen()
+            report_functions.manager_reports()
+        elif choice == '17':
             clear_screen()
             logged_in = False
             break

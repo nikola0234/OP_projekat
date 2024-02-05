@@ -31,3 +31,4 @@
 9999AL|-|tuesday
 9999AN|0|thursday
 1122AN|0|friday
+3333BM|+|saturday
