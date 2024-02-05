@@ -5,13 +5,19 @@ from ticket_functions import sold_ticket_info
 from ticket_functions import appointment_info
 from ticket_functions import users
 from ticket_functions import tickets_sold
-from datetime import datetime
+from datetime import datetime, timedelta
 import validations
 
 
 def find_projection_code(movie_name, projection):
     if projection['movie name'].lower() == movie_name.lower():
         return projection['code']
+
+
+def is_date_in_last_30_days(date_str):
+    date_object = datetime.strptime(date_str, "%d.%m.%Y")
+    difference = datetime.now() - date_object
+    return difference <= timedelta(days=30)
 
 
 def print_table_reports(table_data, headers):
@@ -414,7 +420,7 @@ def report_num8():
         for ticket1 in sold_ticket_info:
             if ticket1['employee'] == employee:
                 for ticket in tickets_sold:
-                    if ticket['seat'] == ticket1['seat'] and ticket['appointment'] == ticket1['appointment']:
+                    if ticket['seat'] == ticket1['seat'] and ticket['appointment'] == ticket1['appointment'] and is_date_in_last_30_days(ticket1['date_sold']):
                         total_number += 1
                         total_price += float(ticket1['price'])
         table_row = [
