@@ -513,7 +513,8 @@ def reserving_tickets(user):
                     print('You are the loyalty card owner, when you buy the ticket you will get 10% discount!')
             elif card['username'] == name_surname:
                 if card['status'] == 'yes\n':
-                    print('This user is the loyalty card owner, when he/she buy the ticket he/she will get 10% discount!')
+                    print('This user is the loyalty card owner,'
+                          ' when he/she buy the ticket he/she will get 10% discount!')
         for appointment in appointment_info:
             if new_ticket['appointment'] == appointment['code']:
                 if appointment['changing_price'] == '-' and user['role'] != 'employee\n':
@@ -576,7 +577,8 @@ def canceling_reservation(user):
                     deleted = True
                     write_tickets()
                 elif ticket['name'] == user['username'] and ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
-                    seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
+                    seat_to_write = input('There are more tickets for same appointment'
+                                          ', enter wich seat you want to cancel: ')
                     for ticket1 in tickets_reserved:
                         if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
                             ticket1['status'] = 'canceled\n'
@@ -662,7 +664,8 @@ def canceling_tickets_employee(user):
                     deleted = True
                     write_tickets()
                 elif ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
-                    seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
+                    seat_to_write = input('There are more tickets for same appointment'
+                                          ', enter wich seat you want to cancel: ')
                     for ticket1 in tickets_reserved:
                         if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
                             ticket1['status'] = 'canceled\n'
@@ -678,7 +681,8 @@ def canceling_tickets_employee(user):
                     deleted = True
                     write_tickets()
                 elif ticket['appointment'] == ticket_to_cancel and existing_tickets.count(ticket['appointment']) >= 2 and not deleted:
-                    seat_to_write = input('There are more tickets for same appointment, enter wich seat you want to cancel: ')
+                    seat_to_write = input('There are more tickets for same appointment,'
+                                          ' enter wich seat you want to cancel: ')
                     for ticket1 in tickets_sold:
                         if ticket1['appointment'] == ticket_to_cancel and ticket1['seat'] == seat_to_write:
                             ticket1['status'] = 'canceled\n'
@@ -878,7 +882,8 @@ def selling_reserved_tickets(user):
                     write_tickets()
                     sold = True
                 elif ticket['appointment'] == ticket_code and existing_reserved_tickets.count(ticket['appointment']) >= 2 and not sold:
-                    seat_to_sell = input('There are more tickets for same appointment, enter wich seat you want to sell: ')
+                    seat_to_sell = input('There are more tickets for same appointment'
+                                         ', enter wich seat you want to sell: ')
                     for ticket1 in tickets_reserved:
                         if ticket1['appointment'] == ticket_code and ticket1['seat'] == seat_to_sell:
                             ticket1['status'] = 'sold\n'
@@ -928,7 +933,7 @@ def filter_tickets(choice):
     matching_tickets = []
     value = choice_keys[choice]
     filtered = False
-
+    data_input = None
     if choice in '1,2'.split(','):
         while True:
             data_input = input('Enter the appointment code for ticket you are searching(x to go back): ')
@@ -1109,6 +1114,8 @@ def search_for_ticket(user):
 
 
 def change_ticket_data(ticket, changed, existing_tickets):
+    seats = None
+    hall_name = None
     while not changed:
         print('Enter the what do you want to change about a ticket: \n')
         print('1. Change the projection appointment')
@@ -1197,7 +1204,7 @@ def change_ticket_data(ticket, changed, existing_tickets):
                 new_name = input('Enter the new username or name and surname: ')
 
                 if not validations.is_empty_string(new_name):
-                    print('Username, name and surname must contain at leat one character, try again ' )
+                    print('Username, name and surname must contain at leat one character, try again ')
                 else:
                     input('Succesefully changed the username/Name and surname. Enter to continue')
                     ticket['name'] = new_name
@@ -1281,7 +1288,8 @@ def changing_tickets():
         print_reserved_tickets_employee(tickets_reserved, tickets_sold)
         deleted = False
         while True:
-            ticket_to_change = input('Enter the appointment code for reservation you want to change the data for(x to go back): ')
+            ticket_to_change = input('Enter the appointment code for reservation you'
+                                     ' want to change the data for(x to go back): ')
 
             if ticket_to_change.lower() == 'x':
                 break
@@ -1293,7 +1301,8 @@ def changing_tickets():
             break
 
         while True:
-            name = input('Enter the Name/surname or username for ticket you want to change the data for(x to go back): ')
+            name = input('Enter the Name/surname or username for ticket '
+                         'you want to change the data for(x to go back): ')
 
             if name.lower() == 'x':
                 break
@@ -1396,7 +1405,8 @@ def cancel_reservations_half_hour_before_appointment():
                                     write_tickets()
                             else:
                                 continue
-            input('Succesefully deleted all the reservations that are half hour or less from projection. Enter to go to menu...')
+            input('Succesefully deleted all the reservations '
+                  'that are half hour or less from projection. Enter to go to menu...')
             break
 
         else:
