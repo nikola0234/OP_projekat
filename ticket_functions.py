@@ -233,6 +233,7 @@ def read_halls():
 def read_seats_for_appointment():
     with open('appointment_seats.txt', 'r') as fin:
         for line in fin:
+            line = line.replace('\n', '')
             seats_data = line.split('|')
             data = {
                 'code': seats_data[0],
