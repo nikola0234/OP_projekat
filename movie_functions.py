@@ -104,6 +104,29 @@ def print_movies_table(movies):
     print(table)
 
 
+def print_projections(projections_to_print):
+    headers = ["#", "Code", "Cinema hall", "Starting time", "Ending time", "Days", "Movie name",
+               "Price"]
+    table_data = []
+
+    for number, projection in enumerate(projections_to_print, start=1):
+        table_row = [
+            number,
+            projection['code'],
+            projection['cinema hall'],
+            projection['starting time'],
+            projection['ending time'],
+            projection['days'],
+            projection['movie name'],
+            projection['price'],
+        ]
+        if projection['status'] == 'active\n':
+            table_data.append(table_row)
+
+    table = tabulate(table_data, headers=headers, tablefmt='grid')
+    print(table)
+
+
 def read_movies():
     with open('movies.txt', 'r') as fin:
         for line in fin:
@@ -267,6 +290,8 @@ def change_movie_data():
 def add_new_projection():
     print('Currently available movies are: \n')
     print_movies_table(movies)
+    print('Currently avaliable projections:\n')
+    print_projections(projections)
     while True:
         movie_name = input('Enter the name of one of available movies to add the projection(x to go back): ')
         if movie_name.lower() == 'x':
@@ -301,8 +326,6 @@ def add_new_projection():
             else:
                 print('Not a valid time format. Correct example: 20:00')
 
-            # Loop for ending time input with validation
-
         while True:
             ending_time = input('Enter the ending time (format HH:MM): ')
             if validations.is_valid_time_format(ending_time):
@@ -312,23 +335,34 @@ def add_new_projection():
 
         days = input('Enter the days of projection: ')
 
-        movie_name = input('Enter the movie name: ')
+        movie_name = movie_name
 
         price = input('Enter the starting price: ')
-
-        days_list = days.split(',')
 
         if not all([code, hall, starting_time, ending_time, days, movie_name, price]):
             print("Please fill in all the data. None of the data can be empty. Try again.\n")
             continue
 
-        with open('projections.txt', 'a') as fin:
-            fin.write(code + '|' + hall + '|' + starting_time + '|' + ending_time + '|' + days + '|' +
-                      movie_name + '|' + price + '|' + 'active' + '\n')
-        print('\nNew projection successfully added!')
-        generate_appointments_from_projections()
-        input('Enter to continue...')
-        break
+        new_projection = {
+            'code': code,
+            'cinema hall': hall,
+            'starting time': starting_time,
+            'ending time': ending_time,
+            'days': days,
+            'movie name': movie_name,
+            'price': price,
+        }
+        if validations.check_projection_overlap(projections, new_projection):
+            print('New projection overlaps the existing one. Try again.')
+            continue
+        else:
+            with open('projections.txt', 'a') as fin:
+                fin.write(code + '|' + hall + '|' + starting_time + '|' + ending_time + '|' + days + '|' +
+                          movie_name + '|' + price + '|' + 'active' + '\n')
+            print('\nNew projection successfully added!')
+            generate_appointments_from_projections()
+            input('Enter to continue...')
+            break
 
 
 def delete_movie_projection():
@@ -377,26 +411,41 @@ def change_projection_data():
     clear_screen1()
     while True:
         print('Currently active movie projections: \n')
-        print_table_projection(projections, apointments)
+        print_projections(projections)
         code = input('Enter the code of projection you want to change(x to go back): ')
 
         if code.lower() == 'x':
             break
 
         projection_found = False
-
+        print(projections)
         for projection in projections:
             if projection['code'] == code:
                 categorie = input('What do you want to change about projection(cinema hall, starting time,'
                                   ' ending time, days, starting price): ')
                 if categorie.lower() == 'cinema hall':
                     while True:
-                        new_hall = input('Enter the new cinema hall for this projection: ')
+                        new_hall = input('Enter the new cinema hall for this projection(x to go back): ')
+                        if new_hall == 'x':
+                            break
                         if new_hall in cinema_halls:
                             projection['cinema hall'] = new_hall
-                            write_projections()
-                            projection_found = True
-                            break
+                            new_projection = {
+                                'code': projection['code'],
+                                'cinema hall': projection['cinema hall'],
+                                'starting time': projection['starting time'],
+                                'ending time': projection['ending time'],
+                                'days': projection['days'],
+                                'movie name': projection['movie name'],
+                                'price': projection['price'],
+                            }
+                            if validations.check_projection_overlap(projections, new_projection):
+                                print('New projection overlaps the existing one. Try again.')
+                                continue
+                            else:
+                                write_projections()
+                                projection_found = True
+                                break
                         else:
                             print('The entered hall is not available! The available ones are:')
                             print(cinema_halls)
@@ -404,10 +453,23 @@ def change_projection_data():
                     while True:
                         new_starting_time = input('Enter the new starting time for this projection(format HH:MM): ')
                         if validations.is_valid_time_format(new_starting_time):
-                            projection['starting time'] = new_starting_time
-                            write_projections()
-                            projection_found = True
-                            break
+                                projection['starting time'] = new_starting_time
+                                new_projection = {
+                                    'code': projection['code'],
+                                    'cinema hall': projection['cinema hall'],
+                                    'starting time': projection['starting time'],
+                                    'ending time': projection['ending time'],
+                                    'days': projection['days'],
+                                    'movie name': projection['movie name'],
+                                    'price': projection['price'],
+                                }
+                                if validations.check_projection_overlap(projections, new_projection):
+                                    print('New projection overlaps the existing one. Try again.')
+                                    continue
+                                else:
+                                    write_projections()
+                                    projection_found = True
+                                    break
                         else:
                             print('Not a valid time format. Correct example: 20:00')
                 elif categorie.lower() == 'ending time':
@@ -415,8 +477,22 @@ def change_projection_data():
                         new_ending_time = input('Enter the new ending time for this projection(format HH:MM): ')
                         if validations.is_valid_time_format(new_ending_time):
                             projection['ending time'] = new_ending_time
-                            projection_found = True
-                            break
+                            new_projection = {
+                                'code': projection['code'],
+                                'cinema hall': projection['cinema hall'],
+                                'starting time': projection['starting time'],
+                                'ending time': projection['ending time'],
+                                'days': projection['days'],
+                                'movie name': projection['movie name'],
+                                'price': projection['price'],
+                            }
+                            if validations.check_projection_overlap(projections, new_projection):
+                                print('New projection overlaps the existing one. Try again.')
+                                continue
+                            else:
+                                write_projections()
+                                projection_found = True
+                                break
                         else:
                             print('Not a valid time format. Correct example: 20:00')
                 elif categorie.lower() == 'starting price':

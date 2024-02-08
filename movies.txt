@@ -2,4 +2,4 @@ The Shawshank Redemption|Drama|142|Frank Darabont|Tim Robbins, Morgan Freeman|US
 The Dark Knight|Drama, Action|152|Christopher Nolan|Christian Bale, Heath Ledger|USA|2008|Batman faces the Joker, a criminal mastermind, testing the hero's moral limits.|active
 The Matrix|Action, Psychological|136|Lana Wachowski, Lilly Wachowski|Keanu Reeves, Laurence Fishburne|SAD|1999|Computer programmer discovers the truth about reality and joins rebels against intelligent machines.|active
 Inception|Action, Sci-Fi, Thriller|148|Christopher Nolan|Leonardo DiCaprio, Joseph Gordon-Levitt|PG-13|2010|A skilled thief enters people's dreams to steal their deepest secrets.|active
-Fight Club|Drama|139|David Fincher|Brad Pitt, Edward Norton, Helena Bonham Carter|R|1999|A disenchanted office worker forms an underground fight club as a form of male bonding, leading to unexpected consequences.|active
+Fight Club|Drama|139|David Fincher|Brad Pitt, Edward Norton, Helena Bonham Carter|USA|1999|A disenchanted office worker forms an underground fight club as a form of male bonding, leading to unexpected consequences.|active
