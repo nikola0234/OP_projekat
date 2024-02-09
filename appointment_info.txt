@@ -32,3 +32,8 @@
 9999AN|0|thursday
 1122AN|0|friday
 3333BM|+|saturday
+1111AM|0|monday
+1111FN|-|tuesday
+4455AG|0|wednesday
+4455AN|0|wednesday
+3333AN|0|thursday

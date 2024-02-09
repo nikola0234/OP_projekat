@@ -369,7 +369,7 @@ def delete_movie_projection():
     clear_screen1()
     while True:
         print('Currently active movie projections: \n')
-        print_table_projection(projections, apointments)
+        print_projections(projections)
         projection = input('Enter the code of projection you want to delete(x to go back): ')
 
         if projection.lower() == 'x':
@@ -383,9 +383,9 @@ def delete_movie_projection():
                 proj['status'] = 'deleted\n'
                 input('Projection succesefully deleted, action will be loaded after you go back to your menu!Enter to go back...')
                 break
-        else:
-                input('The input is inapropriate, click enter and try again!')
-                continue
+
+        input('The input is inapropriate, click enter and try again!')
+        continue
 
 
 def delete_projection_after_movie(movie_name):
@@ -504,8 +504,6 @@ def change_projection_data():
             input('No projection fits entered code! Click enter and try again...')
             continue
 
-# U narednom delu se nalaze funcije vezane za pretragu filmova.
-
 
 def search_by_categories(categories):
     matching_movies = movies.copy()
@@ -513,6 +511,12 @@ def search_by_categories(categories):
     for category in categories:
         if category.lower() == 'duration':
             matching_movies = search_by_duration(matching_movies)
+        elif category.lower() == 'actors':
+            while True:
+                user_input = input(f'Enter the {category} of movie you are willing to search for: ')
+                if user_input:
+                    break
+            matching_movies = filter_actors(user_input)
         else:
             user_input = input(f'Enter the {category} of movie you are willing to search for: ')
             matching_movies = [movie for movie in matching_movies if category_filter_functions[category](user_input, movie[category])]
@@ -558,9 +562,12 @@ def filter_film_director(user_input, movie_film_director):
     return user_input.lower() == movie_film_director.lower()
 
 
-def filter_actors(user_input, movie_actors):
-    movie_actors = [actor.strip() for actor in movie_actors.lower().split(',')]
-    return user_input in movie_actors
+def filter_actors(user_input):
+    movies_match = []
+    for movie in movies:
+        if user_input in movie['actors'].split(','):
+            movies_match.append(movie)
+    return movies_match
 
 
 def filter_country(user_input, movie_country):

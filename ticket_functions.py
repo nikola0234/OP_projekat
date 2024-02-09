@@ -1368,7 +1368,10 @@ def cancel_reservations_half_hour_before_appointment():
                 for ticket1 in tickets_and_data:
                     if datetime.datetime.now().strftime("%d.%m.%Y") == ticket1['date'] and ticket['status'] != 'sold\n':
                         current_time = datetime.datetime.now().time()
-                        ticket_time = datetime.datetime.strptime(ticket1['starting time'], "%H:%M").time()
+                        try:
+                            ticket_time = datetime.datetime.strptime(ticket1['starting time'], "%H:%M").time()
+                        except ValueError:
+                            continue
                         time_difference = (datetime.datetime.combine(datetime.datetime.today(), ticket_time) -
                                            datetime.datetime.combine(datetime.datetime.today(), current_time)).total_seconds() / 60
 

@@ -11,3 +11,4 @@ fight club|3|12.04
 nikola99|9|62.019999999999996|milos1|0|0.0|sara42|0|0.0|sara53|0|0.0|milos2|0|0.0|employee5|0|0.0
 nikola99|9|62.019999999999996|milos1|0|0.0|sara42|2|7.74|sara53|0|0.0|milos2|0|0.0|employee5|0|0.0
 nikola99|9|62.019999999999996|milos1|0|0.0|sara42|2|7.74|sara53|0|0.0|milos2|0|0.0|employee5|0|0.0
+niko4|8888AL|a5|02.02.2024|sold|niko4|8888AN|a7|02.02.2024|sold|nikola1|8888AM|a4|02.02.2024|sold|nikola90|9999AH|a2|02.02.2024|sold|nikola1|9999AA|g6|02.02.2024|sold

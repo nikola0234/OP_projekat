@@ -1,7 +1,8 @@
 nikola1|1122AN|c6|03.02.2024|reserved
 nikola1|9999AG|h8|05.02.2024|reserved
 nikola1|3333CN|a7|08.02.2024|reserved
-nikola1|1122AL|a6|08.02.2024|reserved
+nikola1|1111EN|a8|09.02.2024|sold
+Nikola|2222AL|j9|09.02.2024|reserved
 nikola1|9999AN|a8|07.02.2024|sold
 nikola1|1122AN|a8|07.02.2024|sold
 nikola1|1111FN|j10|07.02.2024|sold
@@ -54,8 +55,12 @@ nikola1|1122AN|b8|03.02.2024|sold
 nikola1|3333BM|a2|05.02.2024|sold
 nikola4|3333BM|a4|05.02.2024|sold
 korisnik1|3333BM|a6|05.02.2024|sold
-niko4|1122AN|c2|05.02.2024|sold
-niko4|1122AN|b2|05.02.2024|sold
+niko4|1122AN|c2|05.02.2024|canceled
+niko4|1122AN|b2|05.02.2024|canceled
+nikola1|1122AN|a4|09.02.2024|sold
+nikola1|1111EN|a9|09.02.2024|sold
+nikola1|1122AL|a6|08.02.2024|canceled
+nikola1|1111DN|a5|09.02.2024|canceled
 nikola1|1111AK|a2|26.01.2024|canceled
 nikola1|3333CN|a10|26.01.2024|canceled
 nikola1|3333AM|a7|29.01.2024|canceled

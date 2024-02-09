@@ -21,3 +21,6 @@ korisnik1|korisnik1|aa|aa|registered_user
 korsinik2|korisnik2|aaa|aaa|registered_user
 employee5|employee5|nikola|bjelica|employee
 nikola90|nikola90|aa|aa|registered_user
+nikola83|nikola83|Nikola|Car|employee
+|pravo123|||manager
+manager45|manager45|Nikola|Nikolic|manager
