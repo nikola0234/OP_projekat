@@ -418,7 +418,6 @@ def change_projection_data():
             break
 
         projection_found = False
-        print(projections)
         for projection in projections:
             if projection['code'] == code:
                 categorie = input('What do you want to change about projection(cinema hall, starting time,'
