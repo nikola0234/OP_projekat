@@ -433,8 +433,6 @@ def reserving_tickets(user):
             existing_app_codes.append(code['code'])
     if not user:
         while True:
-            print(sold_ticket_info)
-            print(projections)
             name_surname = input('You are not registered, please enter name and surname for your ticket reservation: ')
             if not name_surname:
                 print('Name or surname must include at least one character. Please try again.')
@@ -455,7 +453,6 @@ def reserving_tickets(user):
             if ticket_code.lower() == 'x':
                 break
             if ticket_code not in existing_app_codes:
-                print(existing_app_codes)
                 print('Entered code not in existing appointments. Try again')
             else:
                 break
@@ -466,7 +463,6 @@ def reserving_tickets(user):
                 seats = i['seats'].split(',')
         while True:
             print_seats(ticket_code)
-            print(seats)
             chosen_seat = input('Choose one of best free seats for you: ')
             if chosen_seat not in seats:
                 print('You entered filled or not existing seat, please try again.')
@@ -640,7 +636,6 @@ def canceling_tickets_employee(user):
         existing_tickets.append(sold['appointment'])
 
     while True:
-        print(sold_ticket_info)
         print('These are tickets that you can cancel:')
         print_reserved_tickets_employee(tickets_reserved, tickets_sold)
         deleted = False
@@ -746,7 +741,6 @@ def direct_selling_tickets(user):
             if ticket_code.lower() == 'x':
                 break
             if ticket_code not in existing_app_codes:
-                print(existing_app_codes)
                 print('Entered code not in existing appointments. Try again')
             else:
                 break
@@ -765,7 +759,6 @@ def direct_selling_tickets(user):
 
         while True:
             print_seats(ticket_code)
-            print(seats)
             chosen_seat = input('Choose one of best free seats for customer: ')
             if chosen_seat not in seats:
                 print('You entered filled or not existing seat, please try again.')
@@ -1139,7 +1132,7 @@ def change_ticket_data(ticket, changed, existing_tickets):
                     appointments_for_ticket.append(app)
             while True:
                 print('Possible new appointments are: ')
-                print(movie_functions.print_table_projection(projections_for_ticket, appointments_for_ticket))
+                movie_functions.print_table_projection(projections_for_ticket, appointments_for_ticket)
 
                 new_appointment = input('Enter the code of new appointment: ')
                 if new_appointment not in existing_tickets:
